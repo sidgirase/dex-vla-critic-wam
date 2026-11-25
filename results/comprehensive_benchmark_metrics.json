@@ -1,0 +1,95 @@
+{
+  "execution_device": "cpu",
+  "benchmark_1_dexycb_multiview_2d_to_3d_reconstruction": {
+    "dataset": "DexYCB (20200709-subject-01, 4-Camera RGB Input -> 3D Reconstruction vs 8-Cam RGB-D Ground Truth)",
+    "num_frames_evaluated": 5,
+    "hand_3d_triangulation_mpjpe_mm": 2.25,
+    "object_3d_visual_hull_chamfer_x1e3": 0.5382,
+    "object_3d_fscore_at_15mm_pct": 55.15,
+    "leave_one_cam_out_2d_iou_pct": 45.0,
+    "leave_one_cam_out_centroid_error_px": 22.68
+  },
+  "benchmark_2_vegawuji_exact_urdf_and_multiview_posenet": {
+    "urdf_actuated_joints_parsed": 59,
+    "urdf_action_space_dof": 54,
+    "multiview_samples_evaluated": 15,
+    "pipette_3d_pose_rmse_mm": 79.29,
+    "centrifuge_tube_3d_pose_rmse_mm": 142.95,
+    "pipette_axis_cosine_similarity": 0.9863
+  },
+  "benchmark_3_world_model_scaling_and_cotraining": {
+    "PointTransformer_Baseline_VegaWuji": {
+      "train_samples": 10,
+      "test_samples": 3,
+      "initial_train_mse": 89.5338,
+      "final_train_mse": 33.4565,
+      "test_disp_mse_x1e3": 30.8238,
+      "test_chamfer_distance_x1e3": 151.2032,
+      "test_emd_sinkhorn_x1e3": 263.7163
+    },
+    "DPINet_DexYCB_GroundTruth_RGBD": {
+      "train_samples": 3,
+      "test_samples": 1,
+      "initial_train_mse": 117.5893,
+      "final_train_mse": 5.8032,
+      "test_disp_mse_x1e3": 4.8681,
+      "test_chamfer_distance_x1e3": 9.7343,
+      "test_emd_sinkhorn_x1e3": 132.6054
+    },
+    "DPINet_DexYCB_4Cam_RGB_Only_VisualHull": {
+      "train_samples": 3,
+      "test_samples": 1,
+      "initial_train_mse": 108.6205,
+      "final_train_mse": 6.069,
+      "test_disp_mse_x1e3": 7.2928,
+      "test_chamfer_distance_x1e3": 10.4081,
+      "test_emd_sinkhorn_x1e3": 127.9632
+    },
+    "DPINet_VegaWuji_Robot_Only": {
+      "train_samples": 10,
+      "test_samples": 3,
+      "initial_train_mse": 108.8314,
+      "final_train_mse": 26.788,
+      "test_disp_mse_x1e3": 40.7723,
+      "test_chamfer_distance_x1e3": 186.5051,
+      "test_emd_sinkhorn_x1e3": 303.283
+    },
+    "DPINet_1to1_CoTrained_Human_Plus_VegaWuji": {
+      "train_samples": 13,
+      "test_samples": 3,
+      "initial_train_mse": 75.0356,
+      "final_train_mse": 24.8286,
+      "test_disp_mse_x1e3": 33.4927,
+      "test_chamfer_distance_x1e3": 149.9873,
+      "test_emd_sinkhorn_x1e3": 281.6322
+    }
+  },
+  "benchmark_4_fast_1hz_multimodal_neural_critic": {
+    "total_samples": 15,
+    "train_samples": 11,
+    "test_samples": 4,
+    "ten_phase_classification_accuracy_pct": 0.0,
+    "phase_transition_recall_pct": 0.0,
+    "fault_classification_accuracy_pct": 75.0,
+    "failure_detection_f1_pct": 0.0,
+    "seetraceact_2d_trace_l1_error": 0.1296,
+    "sage_sink_grounding_ratio": 0.958,
+    "uncached_sliding_window_latency_ms": 27.9,
+    "uncached_rate_hz": 35.84,
+    "cached_perceiver_latency_ms": 1.14,
+    "cached_effective_rate_hz": 875.07,
+    "cache_speedup_multiplier": 24.41,
+    "mean_camera_token_cache_hit_pct": 100.0,
+    "meets_1hz_target": true
+  },
+  "benchmark_5_rft_191_episode_failure_log_audit": {
+    "total_simulation_logs_audited": 191,
+    "p7_drop_catch_slip_episodes": 61,
+    "p7_slip_rate_pct": 31.94,
+    "p11_return_qp_ik_crashes": 10,
+    "median_physical_slip_mm": 302.5,
+    "mean_wasted_post_failure_sim_sec": 70.6,
+    "mean_wasted_post_failure_wall_sec": 586.0,
+    "wasted_episode_fraction_pct": 64.0
+  }
+}
