@@ -1,51 +1,58 @@
-#!/usr/bin/env bash
-#SBATCH -J dex_vla_critic_wam
-#SBATCH -N 1
-#SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=8
-#SBATCH --mem=48G
-#SBATCH --gres=gpu:l40s:1
-#SBATCH -t 04:00:00
-#SBATCH -o logs/pace_gpu_%j.out
-#SBATCH -e logs/pace_gpu_%j.err
+#!/bin/bash
+#SBATCH --job-name=dex_vla_wam
+#SBATCH --nodes=1
+#SBATCH --gres=gpu:1
+#SBATCH --time=00:45:00
+#SBATCH --mem=24G
+#SBATCH --output=logs/pace_gpu_%j.out
+#SBATCH --error=logs/pace_gpu_%j.err
 # ==============================================================================
-# Georgia Tech PACE-ICE Heavy GPU Suite for `dex-vla-critic-wam`
-# 1. Configures scratch storage (`~/scratch/huggingface`, `~/scratch/capstone_datasets`)
-#    so large datasets (`HenryZ07/RFT-reference-trajectory`, `birbirll/vega-pipette-fail`)
-#    and VLM weights (`OpenGVLab/InternVL3-2B-hf`) never overflow the 30 GB home quota.
-# 2. Runs 100-epoch GPU training of `DPINetWorldModel`, `PointTransformerWorldModel`,
-#    `MultiViewObjectPoseNet`, and `Fast1HzNeuralCritic`.
-# 3. Benchmarks the full 2B `OpenGVLab/InternVL3-2B-hf` in 4-bit NF4 (`bitsandbytes`)
-#    with `torch.backends.cuda.enable_cudnn_sdp(False)` and Perceiver token caching.
-# 4. Renders all four 720p MP4 showcase videos into `demo_videos/`.
+# Georgia Tech PACE-ICE Fast-Allocation GPU Suite for `dex-vla-critic-wam`
+# - Uses `#SBATCH --gres=gpu:1` (matches VLM LaneB point.sbatch/profile_vram.sbatch)
+#   so SLURM allocates ANY immediately available GPU (V100, RTX_6000, A40, A100, L40S, H100)
+# - Uses `--time=00:45:00` and `--mem=24G` so SLURM backfill schedules it immediately
+# - Reuses existing `~/scratch/vlm_placement_env` (or `~/scratch/lanea_env`) if present
 # ==============================================================================
 set -euo pipefail
 
 SCRATCH="${SCRATCH:-$HOME/scratch}"
 REPO_DIR="${SLURM_SUBMIT_DIR:-$PWD}"
-ENV_DIR="${ENV_DIR:-$SCRATCH/capstone_env}"
 export HF_HOME="${HF_HOME:-$SCRATCH/huggingface}"
 export VLM_CACHE_ROOT="$HF_HOME"
+export PIP_CACHE_DIR="$SCRATCH/.cache/pip"
 export UV_CACHE_DIR="${SCRATCH}/uv_cache"
 export XDG_CACHE_HOME="${SCRATCH}/.cache"
 export TOKENIZERS_PARALLELISM=false
 
-mkdir -p "$REPO_DIR/logs" "$REPO_DIR/models" "$REPO_DIR/results" "$REPO_DIR/demo_videos" "$SCRATCH/capstone_datasets" "$HF_HOME" "$UV_CACHE_DIR"
+mkdir -p "$REPO_DIR/logs" "$REPO_DIR/models" "$REPO_DIR/results" "$REPO_DIR/demo_videos" "$SCRATCH/capstone_datasets" "$HF_HOME" "$PIP_CACHE_DIR"
 
-module load python/3.12.5 2>/dev/null || module load anaconda3/2023.03 2>/dev/null || true
-module load cuda/12.1 2>/dev/null || module load cuda/12.6.1 2>/dev/null || true
+module load anaconda3/2023.03 2>/dev/null || module load python/3.12.5 2>/dev/null || true
+module load cuda/12.1 2>/dev/null || module load cuda/11.8 2>/dev/null || module load cuda/12.6.1 2>/dev/null || true
 
-export PATH="$HOME/.local/bin:$PATH"
-command -v uv >/dev/null 2>&1 || pip install --user uv
-if [ ! -d "$ENV_DIR" ]; then
-    uv venv "$ENV_DIR" --python 3.12
+# Reuse existing PACE scratch environment from VLM project if available for instant startup
+if [ -d "$SCRATCH/vlm_placement_env" ]; then
+    echo "Reusing existing Conda environment: $SCRATCH/vlm_placement_env"
+    source activate "$SCRATCH/vlm_placement_env" 2>/dev/null || conda activate "$SCRATCH/vlm_placement_env" 2>/dev/null || export PATH="$SCRATCH/vlm_placement_env/bin:$PATH"
+    pip install --quiet opencv-python-headless pyarrow pyyaml huggingface_hub
+elif [ -d "$SCRATCH/lanea_env" ]; then
+    echo "Reusing existing venv: $SCRATCH/lanea_env"
     # shellcheck disable=SC1091
-    source "$ENV_DIR/bin/activate"
-    uv pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
-    uv pip install -r "$REPO_DIR/requirements.txt"
+    source "$SCRATCH/lanea_env/bin/activate"
+    pip install --quiet opencv-python-headless pyarrow pyyaml huggingface_hub
 else
-    # shellcheck disable=SC1091
-    source "$ENV_DIR/bin/activate"
+    ENV_DIR="$SCRATCH/capstone_env"
+    export PATH="$HOME/.local/bin:$PATH"
+    command -v uv >/dev/null 2>&1 || pip install --user uv
+    if [ ! -d "$ENV_DIR" ]; then
+        uv venv "$ENV_DIR"
+        # shellcheck disable=SC1091
+        source "$ENV_DIR/bin/activate"
+        uv pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
+        uv pip install -r "$REPO_DIR/requirements.txt"
+    else
+        # shellcheck disable=SC1091
+        source "$ENV_DIR/bin/activate"
+    fi
 fi
 
 echo "===================================================================="
