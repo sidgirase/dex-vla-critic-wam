@@ -1,0 +1,1877 @@
+<?xml version='1.0' encoding='utf-8'?>
+<robot name="vega_u_wuji_hand2_beta1">
+  <link name="base_link">
+    <inertial>
+      <origin xyz="-0.00062 -0.07869 0.02414" rpy="0 0 0" />
+      <mass value="18.91029" />
+      <inertia ixx="0.60638" ixy="3.13065E-10" ixz="-1.05197E-05" iyy="0.74482" iyz="3.24349E-07" izz="0.89592" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="1.57079 0 1.57079" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/assets/generated/vega_meshes/base_link_43da87ea31/base_link.obj" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="1.57079 0 1.57079" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/assets/generated/vega_meshes/base_link_43da87ea31/base_link.obj" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="lift_link">
+    <inertial>
+      <origin xyz="-2.81873E-06 0.00032 0.5141" rpy="0 0 0" />
+      <mass value="4.35777" />
+      <inertia ixx="0.19538" ixy="1.8612E-07" ixz="-5.15148E-11" iyy="0.19546" iyz="1.27577E-06" izz="0.01487" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="1.57079 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/assets/generated/vega_meshes/lift_link_d2c9c5091b/lift_link.obj" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="1.57079 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/assets/generated/vega_meshes/lift_link_d2c9c5091b/lift_link.obj" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="Lift" type="prismatic">
+    <origin xyz="0 0 0.01" rpy="0 0 1.57079" />
+    <parent link="base_link" />
+    <child link="lift_link" />
+    <axis xyz="0 0 1" />
+    <limit lower="0" upper="0.4" effort="0" velocity="0.05" />
+  </joint>
+  <link name="torso_flip_link">
+    <inertial>
+      <origin xyz="-1.71092E-05 0.06383 0.00204" rpy="0 0 0" />
+      <mass value="0.71794" />
+      <inertia ixx="0.00119" ixy="1.8612E-07" ixz="-5.15157E-11" iyy="0.00128" iyz="1.27577E-06" izz="0.00244" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="1.57079 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/assets/generated/vega_meshes/torso_link_9a53c5e9cd/torso_link.obj" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="1.57079 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/assets/generated/vega_meshes/torso_link_9a53c5e9cd/torso_link.obj" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="torso_flip" type="revolute">
+    <origin xyz="0 -0.06187 0.786" rpy="0 0 0" />
+    <parent link="lift_link" />
+    <child link="torso_flip_link" />
+    <axis xyz="1 0 0" />
+    <limit lower="0" upper="1" effort="0" velocity="0.1" />
+  </joint>
+  <link name="arm_center" />
+  <joint name="arm_center_j0" type="fixed">
+    <origin xyz="0 0.03852 0.25982" rpy="0 0 -1.57079" />
+    <parent link="torso_flip_link" />
+    <child link="arm_center" />
+  </joint>
+  <link name="head_l1">
+    <inertial>
+      <origin xyz="1.30097E-05 0.07221 -0.02629" rpy="0 0 0" />
+      <mass value="0.4378" />
+      <inertia ixx="0.00043" ixy="1.42488E-08" ixz="7.17634E-08" iyy="0.00025" iyz="-1.01085E-06" izz="0.00051" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/assets/generated/vega_meshes/head_l1_f91ffcec50/head_l1.obj" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/dexmate-urdf/robots/humanoid/vega_1/meshes/collision/head_l1.obj" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="head_j1" type="revolute">
+    <origin xyz="-0.0735 -0.0725 0.014" rpy="0 0 0" />
+    <parent link="arm_center" />
+    <child link="head_l1" />
+    <axis xyz="0 1 0" />
+    <limit lower="-1.483" upper="1.483" effort="6" velocity="3.2" />
+  </joint>
+  <link name="head_l2">
+    <inertial>
+      <origin xyz="5.66105e-07 0.000244411 0.0303453" rpy="0 0 0" />
+      <mass value="0.60772" />
+      <inertia ixx="0.000559127" ixy="-7.39058e-10" ixz="3.61875e-09" iyy="0.000331023" iyz="5.3256e-06" izz="0.00051985" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/assets/generated/vega_meshes/head_l2_4015b07eda/head_l2.obj" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/dexmate-urdf/robots/humanoid/vega_1/meshes/collision/head_l2.obj" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="head_j2" type="revolute">
+    <origin xyz="0 0.0725 -0.0035" rpy="0 0 0" />
+    <parent link="head_l1" />
+    <child link="head_l2" />
+    <axis xyz="0 0 1" />
+    <limit lower="-2.792" upper="2.792" effort="2.5" velocity="3.2" />
+  </joint>
+  <link name="head_l3">
+    <inertial>
+      <origin xyz="0.00816 -0.00315 0.03745" rpy="0 0 0" />
+      <mass value="0.63278" />
+      <inertia ixx="0.00083" ixy="-2.23229E-06" ixz="-9.73849E-06" iyy="0.00034" iyz="-9.09642E-06" izz="0.00078" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/assets/generated/vega_meshes/head_l3_243e8e01ad/head_l3.obj" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/dexmate-urdf/robots/humanoid/vega_1/meshes/collision/head_l3.obj" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="head_j3" type="revolute">
+    <origin xyz="0 0.002 0.0495" rpy="0 0 0" />
+    <parent link="head_l2" />
+    <child link="head_l3" />
+    <axis xyz="0 -1 0" />
+    <limit lower="-1.378" upper="1.483" effort="6" velocity="3.2" />
+  </joint>
+  <link name="zed_depth_frame" />
+  <joint name="zed_left_depth_mount" type="fixed">
+    <origin xyz="0.025 0.023 0.0489" rpy="-1.57079 0 -1.57079" />
+    <parent link="head_l3" />
+    <child link="zed_depth_frame" />
+    <axis xyz="0 0 0" />
+  </joint>
+  <link name="zed_left_camera" />
+  <joint name="zed_left_camera_mount" type="fixed">
+    <origin xyz="0.0365 0.023 0.0489" rpy="-1.57079 0 -1.57079" />
+    <parent link="head_l3" />
+    <child link="zed_left_camera" />
+    <axis xyz="0 0 0" />
+  </joint>
+  <link name="zed_right_camera" />
+  <joint name="zed_right_camera_mount" type="fixed">
+    <origin xyz="0.0365 -0.027 0.0489" rpy="-1.57079 0 -1.57079" />
+    <parent link="head_l3" />
+    <child link="zed_right_camera" />
+    <axis xyz="0 0 0" />
+  </joint>
+  <link name="L_arm_l1">
+    <inertial>
+      <origin xyz="0.0285 0.05287 0.00576" rpy="0 0 0" />
+      <mass value="1.41351" />
+      <inertia ixx="0.00168" ixy="-0.00031" ixz="-6.83299E-05" iyy="0.00185" iyz="-5.44956E-05" izz="0.00212" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/assets/generated/vega_meshes/L_arm_l1_5ab73468dc/L_arm_l1.obj" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/dexmate-urdf/robots/humanoid/vega_1/meshes/collision/L_arm_l1.obj" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="L_arm_j1" type="revolute">
+    <origin xyz="0 0.16946 0" rpy="0 0 0" />
+    <parent link="arm_center" />
+    <child link="L_arm_l1" />
+    <axis xyz="0 1 0" />
+    <limit lower="-3.071" upper="3.071" effort="150" velocity="2.4" />
+  </joint>
+  <link name="L_arm_l2">
+    <inertial>
+      <origin xyz="0.08194 -1.45468E-06 -0.04058" rpy="0 0 0" />
+      <mass value="1.40594" />
+      <inertia ixx="0.00168" ixy="-6.27676E-08" ixz="0.00041" iyy="0.00441" iyz="2.02838E-07" izz="0.00412" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/assets/generated/vega_meshes/arm_l2_40a4598515/arm_l2.obj" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/dexmate-urdf/robots/humanoid/vega_1/meshes/collision/arm_l2.obj" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="L_arm_j2" type="revolute">
+    <origin xyz="0.04 0.06 0.0454" rpy="0 0 0" />
+    <parent link="L_arm_l1" />
+    <child link="L_arm_l2" />
+    <axis xyz="0 0 1" />
+    <limit lower="-0.453" upper="1.553" effort="150" velocity="2.4" />
+  </joint>
+  <link name="L_arm_l3">
+    <inertial>
+      <origin xyz="0.07978 0.00403 0.0398" rpy="0 0 0" />
+      <mass value="1.16094" />
+      <inertia ixx="0.0017" ixy="-0.00011" ixz="-0.00104" iyy="0.00337" iyz="-7.78856E-05" izz="0.00257" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/assets/generated/vega_meshes/arm_l3_3a3314f8ca/arm_l3.obj" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/dexmate-urdf/robots/humanoid/vega_1/meshes/collision/arm_l3.obj" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="L_arm_j3" type="revolute">
+    <origin xyz="0.1644 0 -0.043" rpy="0 0 0" />
+    <parent link="L_arm_l2" />
+    <child link="L_arm_l3" />
+    <axis xyz="1 0 0" />
+    <limit lower="-3.071" upper="3.071" effort="80" velocity="2.7" />
+  </joint>
+  <link name="L_arm_l4">
+    <inertial>
+      <origin xyz="0.09219 -0.03791 -0.02953" rpy="0 0 0" />
+      <mass value="0.93204" />
+      <inertia ixx="0.00101" ixy="0.00023" ixz="0.00042" iyy="0.00305" iyz="-0.00011" izz="0.00274" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/assets/generated/vega_meshes/arm_l4_d04922180f/arm_l4.obj" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/dexmate-urdf/robots/humanoid/vega_1/meshes/collision/arm_l4.obj" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="L_arm_j4" type="revolute">
+    <origin xyz="0.113 0.0433 0.06" rpy="0 0 0" />
+    <parent link="L_arm_l3" />
+    <child link="L_arm_l4" />
+    <axis xyz="0 1 0" />
+    <limit lower="-3.071" upper="0.244" effort="80" velocity="2.7" />
+  </joint>
+  <link name="L_arm_l5">
+    <inertial>
+      <origin xyz="0.06497 -0.00266 1.20027E-05" rpy="0 0 0" />
+      <mass value="0.64582" />
+      <inertia ixx="0.00034" ixy="5.36478E-06" ixz="-1.58049E-07" iyy="0.00056" iyz="4.90514E-08" izz="0.00052" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/assets/generated/vega_meshes/arm_l5_621e021d88/arm_l5.obj" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/dexmate-urdf/robots/humanoid/vega_1/meshes/collision/arm_l5.obj" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="L_arm_j5" type="revolute">
+    <origin xyz="0.1938 -0.0434 -0.04" rpy="0 0 0" />
+    <parent link="L_arm_l4" />
+    <child link="L_arm_l5" />
+    <axis xyz="1 0 0" />
+    <limit lower="-3.071" upper="3.071" effort="25" velocity="2.7" />
+  </joint>
+  <link name="L_arm_l6">
+    <inertial>
+      <origin xyz="0.05526 -0.02615 -0.00267" rpy="0 0 0" />
+      <mass value="0.5542" />
+      <inertia ixx="0.00029" ixy="4.89061E-05" ixz="1.80626E-06" iyy="0.00042" iyz="-1.41013E-06" izz="0.00038" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/assets/generated/vega_meshes/L_arm_l6_a3b5e9df78/L_arm_l6.obj" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/dexmate-urdf/robots/humanoid/vega_1/meshes/collision/L_arm_l6.obj" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="L_arm_j6" type="revolute">
+    <origin xyz="0.0762 0.0319 0" rpy="0 0 0" />
+    <parent link="L_arm_l5" />
+    <child link="L_arm_l6" />
+    <axis xyz="0 1 0" />
+    <limit lower="-1.396" upper="1.396" effort="25" velocity="2.7" />
+  </joint>
+  <link name="L_arm_l7">
+    <inertial>
+      <origin xyz="0.032 5.48376E-05 -0.01786" rpy="0 0 0" />
+      <mass value="0.35802" />
+      <inertia ixx="0.0002" ixy="-1.17395E-08" ixz="8.05897E-05" iyy="0.00031" iyz="-2.54703E-08" izz="0.00034" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/assets/generated/vega_meshes/arm_l7_a4479ad35d/arm_l7.obj" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/dexmate-urdf/robots/humanoid/vega_1/meshes/collision/arm_l7.obj" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="L_arm_j7" type="revolute">
+    <origin xyz="0.065 -0.032 0.0319" rpy="0 0 0" />
+    <parent link="L_arm_l6" />
+    <child link="L_arm_l7" />
+    <axis xyz="0 0 1" />
+    <limit lower="-1.378" upper="1.117" effort="25" velocity="2.7" />
+  </joint>
+  <link name="L_arm_l8">
+    <inertial>
+      <origin xyz="-0.01782 -0.00021 0.00027" rpy="0 0 0" />
+      <mass value="0.20064" />
+      <inertia ixx="9.24605E-05" ixy="7.92184E-08" ixz="3.41865E-07" iyy="5.72813E-05" iyz="2.16589E-07" izz="5.67577E-05" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 -1.57079 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/assets/generated/vega_meshes/arm_l8_172909bb69/arm_l8.obj" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 -1.57079 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/dexmate-urdf/robots/humanoid/vega_1/meshes/collision/arm_l8.obj" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="L_arm_j8" type="fixed">
+    <origin xyz="0.11597 0 -0.032" rpy="0 1.57079 0" />
+    <parent link="L_arm_l7" />
+    <child link="L_arm_l8" />
+  </joint>
+  <link name="L_ee" />
+  <joint name="L_ee_j0" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 -1.57079" />
+    <parent link="L_arm_l8" />
+    <child link="L_ee" />
+  </joint>
+  <link name="R_arm_l1">
+    <inertial>
+      <origin xyz="0.02833 -0.05 0.0054" rpy="0 0 0" />
+      <mass value="1.42401" />
+      <inertia ixx="0.00159" ixy="0.00028" ixz="-4.07181E-05" iyy="0.00166" iyz="4.33627E-05" izz="0.00202" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/assets/generated/vega_meshes/R_arm_l1_f6ad9ea822/R_arm_l1.obj" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/dexmate-urdf/robots/humanoid/vega_1/meshes/collision/R_arm_l1.obj" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="R_arm_j1" type="revolute">
+    <origin xyz="0 -0.16946 0" rpy="0 0 0" />
+    <parent link="arm_center" />
+    <child link="R_arm_l1" />
+    <axis xyz="0 -1 0" />
+    <limit lower="-3.071" upper="3.071" effort="150" velocity="2.4" />
+  </joint>
+  <link name="R_arm_l2">
+    <inertial>
+      <origin xyz="0.08749 -1.34526E-06 -0.04135" rpy="0 0 0" />
+      <mass value="1.40595" />
+      <inertia ixx="0.00168" ixy="-6.23948E-08" ixz="0.00041" iyy="0.00441" iyz="2.02625E-07" izz="0.00412" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/assets/generated/vega_meshes/arm_l2_40a4598515/arm_l2.obj" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/dexmate-urdf/robots/humanoid/vega_1/meshes/collision/arm_l2.obj" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="R_arm_j2" type="revolute">
+    <origin xyz="0.04 -0.06 0.0454" rpy="0 0 0" />
+    <parent link="R_arm_l1" />
+    <child link="R_arm_l2" />
+    <axis xyz="0 0 1" />
+    <limit lower="-1.553" upper="0.453" effort="150" velocity="2.4" />
+  </joint>
+  <link name="R_arm_l3">
+    <inertial>
+      <origin xyz="0.08127 0.00414 0.04053" rpy="0 0 0" />
+      <mass value="1.1608" />
+      <inertia ixx="0.0017" ixy="-0.00011" ixz="-0.00104" iyy="0.00337" iyz="-8.33494E-05" izz="0.00257" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/assets/generated/vega_meshes/arm_l3_3a3314f8ca/arm_l3.obj" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/dexmate-urdf/robots/humanoid/vega_1/meshes/collision/arm_l3.obj" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="R_arm_j3" type="revolute">
+    <origin xyz="0.1644 0 -0.043" rpy="0 0 0" />
+    <parent link="R_arm_l2" />
+    <child link="R_arm_l3" />
+    <axis xyz="1 0 0" />
+    <limit lower="-3.071" upper="3.071" effort="80" velocity="2.7" />
+  </joint>
+  <link name="R_arm_l4">
+    <inertial>
+      <origin xyz="0.07728 -0.03736 -0.02906" rpy="0 0 0" />
+      <mass value="0.93204" />
+      <inertia ixx="0.00101" ixy="0.00023" ixz="0.00042" iyy="0.00305" iyz="-0.00011" izz="0.00274" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/assets/generated/vega_meshes/arm_l4_d04922180f/arm_l4.obj" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/dexmate-urdf/robots/humanoid/vega_1/meshes/collision/arm_l4.obj" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="R_arm_j4" type="revolute">
+    <origin xyz="0.113 0.0433 0.06" rpy="0 0 0" />
+    <parent link="R_arm_l3" />
+    <child link="R_arm_l4" />
+    <axis xyz="0 1 0" />
+    <limit lower="-3.071" upper="0.244" effort="80" velocity="2.7" />
+  </joint>
+  <link name="R_arm_l5">
+    <inertial>
+      <origin xyz="0.06457 0.0025 -1.30383E-05" rpy="0 0 0" />
+      <mass value="0.64582" />
+      <inertia ixx="0.00034" ixy="-5.39003E-06" ixz="1.71575E-07" iyy="0.00056" iyz="3.8718E-08" izz="0.00052" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="3.14159 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/assets/generated/vega_meshes/arm_l5_621e021d88/arm_l5.obj" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="3.14159 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/dexmate-urdf/robots/humanoid/vega_1/meshes/collision/arm_l5.obj" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="R_arm_j5" type="revolute">
+    <origin xyz="0.1938 -0.0434 -0.04" rpy="0 0 0" />
+    <parent link="R_arm_l4" />
+    <child link="R_arm_l5" />
+    <axis xyz="1 0 0" />
+    <limit lower="-3.071" upper="3.071" effort="25" velocity="2.7" />
+  </joint>
+  <link name="R_arm_l6">
+    <inertial>
+      <origin xyz="0.05525 0.02614 -0.00267" rpy="0 0 0" />
+      <mass value="0.55372" />
+      <inertia ixx="0.00029" ixy="-4.90706E-05" ixz="1.86055E-06" iyy="0.00042" iyz="1.46356E-06" izz="0.00038" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/assets/generated/vega_meshes/R_arm_l6_782e01af21/R_arm_l6.obj" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/dexmate-urdf/robots/humanoid/vega_1/meshes/collision/R_arm_l6.obj" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="R_arm_j6" type="revolute">
+    <origin xyz="0.0762 -0.0319 0" rpy="0 0 0" />
+    <parent link="R_arm_l5" />
+    <child link="R_arm_l6" />
+    <axis xyz="0 -1 0" />
+    <limit lower="-1.396" upper="1.396" effort="25" velocity="2.7" />
+  </joint>
+  <link name="R_arm_l7">
+    <inertial>
+      <origin xyz="0.03048 5.11736E-05 -0.01709" rpy="0 0 0" />
+      <mass value="0.35802" />
+      <inertia ixx="0.0002" ixy="-1.17425E-08" ixz="8.05897E-05" iyy="0.00031" iyz="-2.54653E-08" izz="0.00034" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/assets/generated/vega_meshes/arm_l7_a4479ad35d/arm_l7.obj" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/dexmate-urdf/robots/humanoid/vega_1/meshes/collision/arm_l7.obj" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="R_arm_j7" type="revolute">
+    <origin xyz="0.065 0.032 0.0319" rpy="0 0 0" />
+    <parent link="R_arm_l6" />
+    <child link="R_arm_l7" />
+    <axis xyz="0 0 1" />
+    <limit lower="-1.117" upper="1.378" effort="25" velocity="2.7" />
+  </joint>
+  <link name="R_arm_l8">
+    <inertial>
+      <origin xyz="-0.01782 1.03176E-06 0.00027" rpy="0 0 0" />
+      <mass value="0.20064" />
+      <inertia ixx="9.24605E-05" ixy="-8.37017E-08" ixz="3.41865E-07" iyy="5.72813E-05" iyz="2.16589E-07" izz="5.67577E-05" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 -1.57079 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/assets/generated/vega_meshes/arm_l8_172909bb69/arm_l8.obj" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 -1.57079 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/dexmate-urdf/robots/humanoid/vega_1/meshes/collision/arm_l8.obj" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="R_arm_j8" type="fixed">
+    <origin xyz="0.11597 0 -0.032" rpy="0 1.57079 0" />
+    <parent link="R_arm_l7" />
+    <child link="R_arm_l8" />
+  </joint>
+  <link name="R_ee" />
+  <joint name="R_ee_j0" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 1.57079" />
+    <parent link="R_arm_l8" />
+    <child link="R_ee" />
+  </joint>
+  <link name="l_wrist">
+    <inertial>
+      <origin xyz="-0.00354846481180995 0.00346683963964194 -0.0356860644390601" rpy="0 0 0" />
+      <mass value="0.2323" />
+      <inertia ixx="9.85362395199503e-05" ixy="5.02770548562397e-07" ixz="4.68412077745037e-06" iyy="0.000154874664631607" iyz="7.29983706603558e-06" izz="7.88065213908458e-05" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/left/l_wrist.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/left/l_wrist.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="l_thumb_proximal">
+    <inertial>
+      <origin xyz="0.00079122509322412 0.00178311370157685 -0.0070198628440797" rpy="0 0 0" />
+      <mass value="0.011" />
+      <inertia ixx="8.42320385263259e-07" ixy="1.71664881640525e-08" ixz="2.74292134965297e-08" iyy="8.35979572393146e-07" iyz="2.26547787793189e-08" izz="6.60613148403527e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/left/l_thumb_proximal.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.627450980392157 0.627450980392157 0.627450980392157 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/left/l_thumb_proximal.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="l_thumb_proximal_abd">
+    <inertial>
+      <origin xyz="1.22552420694907e-05 -4.92144649815677e-06 -0.01356047482551" rpy="0 0 0" />
+      <mass value="0.0336" />
+      <inertia ixx="4.27386487958068e-06" ixy="5.51078127606528e-08" ixz="1.33429353972764e-08" iyy="4.36205472545732e-06" iyz="-7.49032109284105e-09" izz="1.23734737236337e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/left/l_thumb_proximal_abd.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.627450980392157 0.627450980392157 0.627450980392157 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/left/l_thumb_proximal_abd.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="l_thumb_middle">
+    <inertial>
+      <origin xyz="7.07487381503337e-07 4.31164926163312e-08 -0.0143055726350453" rpy="0 0 0" />
+      <mass value="0.0358" />
+      <inertia ixx="4.81959717165607e-06" ixy="-2.57766495533275e-10" ixz="3.27141649197626e-10" iyy="4.9285874374998e-06" iyz="5.19940321321675e-12" izz="1.32688022313704e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/left/l_thumb_middle.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.627450980392157 0.627450980392157 0.627450980392157 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/left/l_thumb_middle.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="l_thumb_distal">
+    <inertial>
+      <origin xyz="1.96900037632988e-05 -0.000512400570084528 -0.0149323237910033" rpy="0 0 0" />
+      <mass value="0.0159" />
+      <inertia ixx="1.33389005856336e-06" ixy="-1.46393131498398e-09" ixz="-9.98691468305934e-09" iyy="1.3724143632953e-06" iyz="7.64224737597816e-08" izz="6.88568352689632e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/left/l_thumb_distal.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/left/l_thumb_distal.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="l_thumb_tip" />
+  <link name="l_index_finger_proximal">
+    <inertial>
+      <origin xyz="-1.83183779682833e-09 0.00178136940467112 -0.00760138673359316" rpy="0 0 0" />
+      <mass value="0.0116" />
+      <inertia ixx="9.19684021204771e-07" ixy="5.28263310201174e-13" ixz="-2.26050912639507e-13" iyy="9.07912667632641e-07" iyz="9.11687065077694e-09" izz="7.89107764317312e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/left/l_index_finger_proximal.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/left/l_index_finger_proximal.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="l_index_finger_proximal_abd">
+    <inertial>
+      <origin xyz="-8.04676577889812e-08 -7.30404335338175e-07 -0.0187993794552261" rpy="0 0 0" />
+      <mass value="0.0339" />
+      <inertia ixx="7.01584133885442e-06" ixy="1.13787730544642e-10" ixz="1.19062449542943e-11" iyy="7.01558877908418e-06" iyz="1.97233465062954e-10" izz="9.14480410678107e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/left/l_index_finger_proximal_abd.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/left/l_index_finger_proximal_abd.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="l_index_finger_middle">
+    <inertial>
+      <origin xyz="5.07335165382715e-08 0.000247886788908191 -0.0190348353019487" rpy="0 0 0" />
+      <mass value="0.0212" />
+      <inertia ixx="2.40525408841247e-06" ixy="4.36771597549511e-11" ixz="1.01321951809926e-11" iyy="2.47626497450666e-06" iyz="-5.5737870397636e-08" izz="6.54181652505219e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/left/l_index_finger_middle.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/left/l_index_finger_middle.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="l_index_finger_distal">
+    <inertial>
+      <origin xyz="-0.000273616418613259 3.02074836965843e-05 -0.0121848684408513" rpy="0 0 0" />
+      <mass value="0.0078" />
+      <inertia ixx="5.38224803482851e-07" ixy="-2.79679305888823e-10" ixz="2.55304648023035e-08" iyy="5.7139896537188e-07" iyz="2.92327744662251e-08" izz="2.79172555340954e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/left/l_index_finger_distal.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/left/l_index_finger_distal.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="l_index_finger_tip" />
+  <link name="l_middle_finger_proximal">
+    <inertial>
+      <origin xyz="-1.83183779682832e-09 0.00178136940467112 -0.00760138673359316" rpy="0 0 0" />
+      <mass value="0.0116" />
+      <inertia ixx="9.1968402120477e-07" ixy="5.28263310199824e-13" ixz="-2.26050912643555e-13" iyy="9.07912667632641e-07" iyz="9.11687065077699e-09" izz="7.89107764317311e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/left/l_middle_finger_proximal.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/left/l_middle_finger_proximal.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="l_middle_finger_proximal_abd">
+    <inertial>
+      <origin xyz="-8.04676577889812e-08 -7.30404335338175e-07 -0.0187993794552261" rpy="0 0 0" />
+      <mass value="0.0339" />
+      <inertia ixx="7.01584133885442e-06" ixy="1.13787730544642e-10" ixz="1.19062449543086e-11" iyy="7.01558877908418e-06" iyz="1.9723346506284e-10" izz="9.14480410678107e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/left/l_middle_finger_proximal_abd.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/left/l_middle_finger_proximal_abd.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="l_middle_finger_middle">
+    <inertial>
+      <origin xyz="5.07335165383798e-08 0.000247886788908191 -0.0190348353019487" rpy="0 0 0" />
+      <mass value="0.0212" />
+      <inertia ixx="2.40525408841247e-06" ixy="4.36771597549517e-11" ixz="1.01321951809443e-11" iyy="2.47626497450666e-06" iyz="-5.57378703976359e-08" izz="6.54181652505219e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/left/l_middle_finger_middle.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/left/l_middle_finger_middle.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="l_middle_finger_distal">
+    <inertial>
+      <origin xyz="-0.000273616418613259 3.02074836965843e-05 -0.0121848684408513" rpy="0 0 0" />
+      <mass value="0.0078" />
+      <inertia ixx="5.38224803482851e-07" ixy="-2.79679305888823e-10" ixz="2.55304648023035e-08" iyy="5.7139896537188e-07" iyz="2.92327744662251e-08" izz="2.79172555340954e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/left/l_middle_finger_distal.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/left/l_middle_finger_distal.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="l_middle_finger_tip" />
+  <link name="l_ring_finger_proximal">
+    <inertial>
+      <origin xyz="-1.83183779712613e-09 0.00178136940467112 -0.00760138673359316" rpy="0 0 0" />
+      <mass value="0.0116" />
+      <inertia ixx="9.1968402120477e-07" ixy="5.28263310194345e-13" ixz="-2.26050912626742e-13" iyy="9.07912667632641e-07" iyz="9.11687065077699e-09" izz="7.89107764317311e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/left/l_ring_finger_proximal.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/left/l_ring_finger_proximal.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="l_ring_finger_proximal_abd">
+    <inertial>
+      <origin xyz="-8.04676577889812e-08 -7.3040433533831e-07 -0.0187993794552261" rpy="0 0 0" />
+      <mass value="0.0339" />
+      <inertia ixx="7.01584133885442e-06" ixy="1.13787730544642e-10" ixz="1.19062449542943e-11" iyy="7.01558877908418e-06" iyz="1.97233465063041e-10" izz="9.14480410678107e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/left/l_ring_finger_proximal_abd.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/left/l_ring_finger_proximal_abd.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="l_ring_finger_middle">
+    <inertial>
+      <origin xyz="5.07335165382174e-08 0.000247886788908191 -0.0190348353019487" rpy="0 0 0" />
+      <mass value="0.0212" />
+      <inertia ixx="2.40525408841247e-06" ixy="4.36771597549504e-11" ixz="1.01321951810083e-11" iyy="2.47626497450666e-06" iyz="-5.5737870397636e-08" izz="6.54181652505219e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/left/l_ring_finger_middle.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/left/l_ring_finger_middle.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="l_ring_finger_distal">
+    <inertial>
+      <origin xyz="-0.000273616418613259 3.02074836965843e-05 -0.0121848684408513" rpy="0 0 0" />
+      <mass value="0.0078" />
+      <inertia ixx="5.38224803482851e-07" ixy="-2.79679305888823e-10" ixz="2.55304648023035e-08" iyy="5.7139896537188e-07" iyz="2.92327744662251e-08" izz="2.79172555340954e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/left/l_ring_finger_distal.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/left/l_ring_finger_distal.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="l_ring_finger_tip" />
+  <link name="l_pinky_proximal">
+    <inertial>
+      <origin xyz="2.12812591107442e-07 0.00178135727369686 -0.0076014493665863" rpy="0 0 0" />
+      <mass value="0.0116" />
+      <inertia ixx="9.19664071567262e-07" ixy="1.95991179054896e-12" ixz="5.4796128616458e-12" iyy="9.07907902756333e-07" iyz="9.11613217431931e-09" izz="7.89108892122655e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/left/l_pinky_proximal.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/left/l_pinky_proximal.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="l_pinky_proximal_abd">
+    <inertial>
+      <origin xyz="-1.55648567798391e-06 -5.4540441831333e-07 -0.0167849719816953" rpy="0 0 0" />
+      <mass value="0.0304" />
+      <inertia ixx="5.37945677539697e-06" ixy="1.12253837519393e-10" ixz="1.64159690323259e-10" iyy="5.38012308975744e-06" iyz="2.32497167576713e-10" izz="8.1770981465718e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/left/l_pinky_proximal_abd.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/left/l_pinky_proximal_abd.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="l_pinky_middle">
+    <inertial>
+      <origin xyz="3.23236154986141e-07 0.000264490618214145 -0.0178806678503094" rpy="0 0 0" />
+      <mass value="0.0188" />
+      <inertia ixx="1.98647409664573e-06" ixy="4.62366243544298e-11" ixz="-4.73747915317587e-12" iyy="2.05807093186236e-06" iyz="-4.70563185846108e-08" izz="5.86414432805737e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/left/l_pinky_middle.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/left/l_pinky_middle.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="l_pinky_distal">
+    <inertial>
+      <origin xyz="-0.000273616410176766 3.02074975575832e-05 -0.0121848694412284" rpy="0 0 0" />
+      <mass value="0.0078" />
+      <inertia ixx="5.3822480383925e-07" ixy="-2.79679073829008e-10" ixz="2.55304654701796e-08" iyy="5.71398964858656e-07" iyz="2.92327753214756e-08" izz="2.79172554985502e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/left/l_pinky_distal.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/left/l_pinky_distal.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="l_pinky_tip" />
+  <joint name="l_thumb_cmc_flex" type="revolute">
+    <origin xyz="0.017207626380777 -0.00813796855319014 -0.0164596176025776" rpy="1.66150410504715 -1.05908069628934 -1.99192792813602" />
+    <parent link="l_wrist" />
+    <child link="l_thumb_proximal" />
+    <axis xyz="-1 0 0" />
+    <limit lower="-1.1870" upper="1.2910" effort="0.6000" velocity="8.587" />
+  </joint>
+  <joint name="l_thumb_cmc_abd" type="revolute">
+    <origin xyz="0.000257894937240318 0.000631672773873052 -0.0141612102388694" rpy="-0.205291970332125 0.700508717178481 -0.0252378802491784" />
+    <parent link="l_thumb_proximal" />
+    <child link="l_thumb_proximal_abd" />
+    <axis xyz="0 1 0" />
+    <limit lower="-1.4840" upper="0.6980" effort="0.6000" velocity="11.1" />
+  </joint>
+  <joint name="l_thumb_mcp" type="revolute">
+    <origin xyz="-4.31364606099851E-05 2.49048674495827E-05 -0.0334956422241401" rpy="0 0.0872664625997161 -0.523598775598299" />
+    <parent link="l_thumb_proximal_abd" />
+    <child link="l_thumb_middle" />
+    <axis xyz="-1 0 0" />
+    <limit lower="-1.0470" upper="1.5700" effort="0.3000" velocity="12.86" />
+  </joint>
+  <joint name="l_thumb_ip" type="revolute">
+    <origin xyz="0 0 -0.0349999999999976" rpy="0 0 0" />
+    <parent link="l_thumb_middle" />
+    <child link="l_thumb_distal" />
+    <axis xyz="-1 0 0" />
+    <limit lower="-1.0470" upper="1.5700" effort="0.3000" velocity="13.5" />
+  </joint>
+  <joint name="l_thumb_tip_fixed" type="fixed">
+    <origin xyz="0 0 -0.029787086935139" rpy="0 0 0" />
+    <parent link="l_thumb_distal" />
+    <child link="l_thumb_tip" />
+  </joint>
+  <joint name="l_index_finger_mcp_flex" type="revolute">
+    <origin xyz="0.0226524150577227 0.00332515884504703 -0.0699780241478046" rpy="0.0397801377022703 -0.136929341252724 -0.100403924639931" />
+    <parent link="l_wrist" />
+    <child link="l_index_finger_proximal" />
+    <axis xyz="-1 0 0" />
+    <limit lower="-1.0470" upper="1.5700" effort="2.0000" velocity="8.203" />
+  </joint>
+  <joint name="l_index_finger_mcp_abd" type="revolute">
+    <origin xyz="0 0.00120098019222331 -0.014499999983839" rpy="0 0 0" />
+    <parent link="l_index_finger_proximal" />
+    <child link="l_index_finger_proximal_abd" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.6980" upper="0.6980" effort="0.2000" velocity="8.11" />
+  </joint>
+  <joint name="l_index_finger_pip" type="revolute">
+    <origin xyz="0 0 -0.0376" rpy="0 0 0" />
+    <parent link="l_index_finger_proximal_abd" />
+    <child link="l_index_finger_middle" />
+    <axis xyz="-1 0 0" />
+    <limit lower="-1.0470" upper="2.0940" effort="0.3000" velocity="12.86" />
+  </joint>
+  <joint name="l_index_finger_dip" type="revolute">
+    <origin xyz="0 0 -0.0295000000000001" rpy="0 0 0" />
+    <parent link="l_index_finger_middle" />
+    <child link="l_index_finger_distal" />
+    <axis xyz="-1 0 0" />
+    <limit lower="-1.0470" upper="1.5700" effort="0.3000" velocity="13.5" />
+  </joint>
+  <joint name="l_index_finger_tip_fixed" type="fixed">
+    <origin xyz="0 0 -0.0247496897908897" rpy="0 0 0" />
+    <parent link="l_index_finger_distal" />
+    <child link="l_index_finger_tip" />
+  </joint>
+  <joint name="l_middle_finger_mcp_flex" type="revolute">
+    <origin xyz="0.00094309364603887 0.0083030134913478 -0.0739154421481339" rpy="0.033913594707111 0.011157971722942 0.000715284906568205" />
+    <parent link="l_wrist" />
+    <child link="l_middle_finger_proximal" />
+    <axis xyz="-1 0 0" />
+    <limit lower="-1.0470" upper="1.5700" effort="2.0000" velocity="8.203" />
+  </joint>
+  <joint name="l_middle_finger_mcp_abd" type="revolute">
+    <origin xyz="0 0.00120098019222334 -0.0144999999838389" rpy="0 0 0" />
+    <parent link="l_middle_finger_proximal" />
+    <child link="l_middle_finger_proximal_abd" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.6980" upper="0.6980" effort="0.2000" velocity="8.11" />
+  </joint>
+  <joint name="l_middle_finger_pip" type="revolute">
+    <origin xyz="0 0 -0.0376" rpy="0 0 0" />
+    <parent link="l_middle_finger_proximal_abd" />
+    <child link="l_middle_finger_middle" />
+    <axis xyz="-1 0 0" />
+    <limit lower="-1.0470" upper="2.0940" effort="0.3000" velocity="12.86" />
+  </joint>
+  <joint name="l_middle_finger_dip" type="revolute">
+    <origin xyz="0 0 -0.0295000000000002" rpy="0 0 0" />
+    <parent link="l_middle_finger_middle" />
+    <child link="l_middle_finger_distal" />
+    <axis xyz="-1 0 0" />
+    <limit lower="-1.0470" upper="1.5700" effort="0.3000" velocity="13.5" />
+  </joint>
+  <joint name="l_middle_finger_tip_fixed" type="fixed">
+    <origin xyz="0 0 -0.0247496897908898" rpy="0 0 0" />
+    <parent link="l_middle_finger_distal" />
+    <child link="l_middle_finger_tip" />
+  </joint>
+  <joint name="l_ring_finger_mcp_flex" type="revolute">
+    <origin xyz="-0.0197517711681211 0.00559293039963101 -0.0653974975587606" rpy="0.0166629517384712 0.141753986952012 0.0683208000424049" />
+    <parent link="l_wrist" />
+    <child link="l_ring_finger_proximal" />
+    <axis xyz="-1 0 0" />
+    <limit lower="-1.0470" upper="1.5700" effort="2.0000" velocity="8.203" />
+  </joint>
+  <joint name="l_ring_finger_mcp_abd" type="revolute">
+    <origin xyz="0 0.00120098019222327 -0.014499999983839" rpy="0 0 0" />
+    <parent link="l_ring_finger_proximal" />
+    <child link="l_ring_finger_proximal_abd" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.6980" upper="0.6980" effort="0.2000" velocity="8.11" />
+  </joint>
+  <joint name="l_ring_finger_pip" type="revolute">
+    <origin xyz="0 0 -0.0376" rpy="0 0 0" />
+    <parent link="l_ring_finger_proximal_abd" />
+    <child link="l_ring_finger_middle" />
+    <axis xyz="-1 0 0" />
+    <limit lower="-1.0470" upper="2.0940" effort="0.3000" velocity="12.86" />
+  </joint>
+  <joint name="l_ring_finger_dip" type="revolute">
+    <origin xyz="0 0 -0.0295000000000001" rpy="0 0 0" />
+    <parent link="l_ring_finger_middle" />
+    <child link="l_ring_finger_distal" />
+    <axis xyz="-1 0 0" />
+    <limit lower="-1.0470" upper="1.5700" effort="0.3000" velocity="13.5" />
+  </joint>
+  <joint name="l_ring_finger_tip_fixed" type="fixed">
+    <origin xyz="0 0 -0.0247496897908897" rpy="0 0 0" />
+    <parent link="l_ring_finger_distal" />
+    <child link="l_ring_finger_tip" />
+  </joint>
+  <joint name="l_pinky_mcp_flex" type="revolute">
+    <origin xyz="-0.0373572872886148 0.000733759922594786 -0.0552917010368086" rpy="0.00981701706873381 0.248975826730062 0.13602514715951" />
+    <parent link="l_wrist" />
+    <child link="l_pinky_proximal" />
+    <axis xyz="-1 0 0" />
+    <limit lower="-1.0470" upper="1.5700" effort="2.0000" velocity="8.203" />
+  </joint>
+  <joint name="l_pinky_mcp_abd" type="revolute">
+    <origin xyz="0 0.00120098026250511 -0.0145000000235719" rpy="0 0 0" />
+    <parent link="l_pinky_proximal" />
+    <child link="l_pinky_proximal_abd" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.6980" upper="0.6980" effort="0.2000" velocity="8.11" />
+  </joint>
+  <joint name="l_pinky_pip" type="revolute">
+    <origin xyz="-9.99999999990349E-05 0 -0.0336" rpy="0 0 0" />
+    <parent link="l_pinky_proximal_abd" />
+    <child link="l_pinky_middle" />
+    <axis xyz="-1 0 0" />
+    <limit lower="-1.0470" upper="2.0940" effort="0.3000" velocity="12.86" />
+  </joint>
+  <joint name="l_pinky_dip" type="revolute">
+    <origin xyz="0 0 -0.0274999990285796" rpy="0 0 0" />
+    <parent link="l_pinky_middle" />
+    <child link="l_pinky_distal" />
+    <axis xyz="-1 0 0" />
+    <limit lower="-1.0470" upper="1.5700" effort="0.3000" velocity="13.5" />
+  </joint>
+  <joint name="l_pinky_tip_fixed" type="fixed">
+    <origin xyz="0 0 -0.0247496907544374" rpy="0 0 0" />
+    <parent link="l_pinky_distal" />
+    <child link="l_pinky_tip" />
+  </joint>
+  <joint name="left_wuji_mount" type="fixed">
+    <parent link="L_arm_l8" />
+    <child link="l_wrist" />
+    <origin xyz="0.00019 0.0039 0.00014" rpy="-2.79752 0.10561 -1.57079" />
+  </joint>
+  <link name="r_wrist">
+    <inertial>
+      <origin xyz="-0.00354289960216114 -0.00346747236064104 -0.0356950477107829" rpy="0 0 0" />
+      <mass value="0.2323" />
+      <inertia ixx="9.85805046027055e-05" ixy="-5.21545995919675e-07" ixz="4.69877332365686e-06" iyy="0.000154959113329145" iyz="-7.307300403419e-06" izz="7.88501370904413e-05" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/right/r_wrist.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/right/r_wrist.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="r_thumb_proximal">
+    <inertial>
+      <origin xyz="0.000853657429950494 -0.00195618452655939 -0.0073180857322072" rpy="0 0 0" />
+      <mass value="0.011" />
+      <inertia ixx="8.07001987681193e-07" ixy="-2.76970722043947e-08" ixz="2.8571196010973e-08" iyy="8.07898105945808e-07" iyz="-8.77269995533649e-09" izz="6.37878016479553e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/right/r_thumb_proximal.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.627450980392157 0.627450980392157 0.627450980392157 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/right/r_thumb_proximal.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="r_thumb_proximal_abd">
+    <inertial>
+      <origin xyz="1.27934027458564e-05 6.47331010436739e-06 -0.0130543616151469" rpy="0 0 0" />
+      <mass value="0.0336" />
+      <inertia ixx="4.11671493729103e-06" ixy="-5.9929784662906e-08" ixz="1.30616608491388e-08" iyy="4.19675217766626e-06" iyz="8.09095132539748e-09" izz="1.23568384428672e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/right/r_thumb_proximal_abd.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.627450980392157 0.627450980392157 0.627450980392157 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/right/r_thumb_proximal_abd.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="r_thumb_middle">
+    <inertial>
+      <origin xyz="-4.92924294004124e-05 0.00157446188107281 -0.0142186664853882" rpy="0 0 0" />
+      <mass value="0.0358" />
+      <inertia ixx="4.81959718207973e-06" ixy="-2.92203337868712e-10" ixz="2.96784452081092e-10" iyy="4.88496098448286e-06" iyz="3.93987891241261e-07" izz="1.37050667990248e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/right/r_thumb_middle.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.627450980392157 0.627450980392157 0.627450980392157 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/right/r_thumb_middle.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="r_thumb_distal">
+    <inertial>
+      <origin xyz="-1.96899979162389e-05 0.000584113313185443 -0.0149296905328378" rpy="0 0 0" />
+      <mass value="0.0159" />
+      <inertia ixx="1.33389005598297e-06" ixy="-1.51187990210105e-09" ixz="9.97976948534658e-09" iyy="1.37313267819339e-06" iyz="-7.31345395380854e-08" izz="6.87850035199638e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/right/r_thumb_distal.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/right/r_thumb_distal.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="r_thumb_tip" />
+  <link name="r_index_finger_proximal">
+    <inertial>
+      <origin xyz="1.83161025002185e-09 -0.00178136940445361 -0.00760138673373379" rpy="0 0 0" />
+      <mass value="0.0116" />
+      <inertia ixx="9.19684021219303e-07" ixy="5.28247185749756e-13" ixz="2.26060089847088e-13" iyy="9.07912667640505e-07" iyz="-9.11687066972156e-09" izz="7.89107764311872e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/right/r_index_finger_proximal.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/right/r_index_finger_proximal.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="r_index_finger_proximal_abd">
+    <inertial>
+      <origin xyz="8.04675146186652e-08 7.3040368472784e-07 -0.0187993794550997" rpy="0 0 0" />
+      <mass value="0.0339" />
+      <inertia ixx="7.0158413388037e-06" ixy="1.13787856174592e-10" ixz="-1.19062498369979e-11" iyy="7.01558877903507e-06" iyz="-1.9723340220264e-10" izz="9.14480410679966e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/right/r_index_finger_proximal_abd.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/right/r_index_finger_proximal_abd.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="r_index_finger_middle">
+    <inertial>
+      <origin xyz="-5.07335390505094e-08 -0.000247886788910862 -0.0190348353019456" rpy="0 0 0" />
+      <mass value="0.0212" />
+      <inertia ixx="2.40525408841305e-06" ixy="4.36771620897472e-11" ixz="-1.01321951276004e-11" iyy="2.47626497450938e-06" iyz="5.57378703986573e-08" izz="6.54181652504255e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/right/r_index_finger_middle.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/right/r_index_finger_middle.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="r_index_finger_distal">
+    <inertial>
+      <origin xyz="0.000273616411847607 -3.02074856552092e-05 -0.0121848684418609" rpy="0 0 0" />
+      <mass value="0.0078" />
+      <inertia ixx="5.38224802903959e-07" ixy="-2.79679442692154e-10" ixz="-2.5530464631837e-08" iyy="5.71398964851628e-07" iyz="-2.92327746439665e-08" izz="2.79172555327135e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/right/r_index_finger_distal.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/right/r_index_finger_distal.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="r_index_finger_tip" />
+  <link name="r_middle_finger_proximal">
+    <inertial>
+      <origin xyz="1.83161025002185e-09 -0.0017813694044536 -0.00760138673373379" rpy="0 0 0" />
+      <mass value="0.0116" />
+      <inertia ixx="9.19684021219303e-07" ixy="5.28247185749756e-13" ixz="2.26060089849787e-13" iyy="9.07912667640505e-07" iyz="-9.11687066972167e-09" izz="7.89107764311872e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/right/r_middle_finger_proximal.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/right/r_middle_finger_proximal.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="r_middle_finger_proximal_abd">
+    <inertial>
+      <origin xyz="8.0467514618682e-08 7.3040368472784e-07 -0.0187993794550997" rpy="0 0 0" />
+      <mass value="0.0339" />
+      <inertia ixx="7.0158413388037e-06" ixy="1.13787856174592e-10" ixz="-1.19062498370086e-11" iyy="7.01558877903507e-06" iyz="-1.97233402202641e-10" izz="9.14480410679966e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/right/r_middle_finger_proximal_abd.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/right/r_middle_finger_proximal_abd.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="r_middle_finger_middle">
+    <inertial>
+      <origin xyz="-5.07335390506177e-08 -0.000247886788910862 -0.0190348353019456" rpy="0 0 0" />
+      <mass value="0.0212" />
+      <inertia ixx="2.40525408841305e-06" ixy="4.36771620897459e-11" ixz="-1.01321951275526e-11" iyy="2.47626497450938e-06" iyz="5.57378703986573e-08" izz="6.54181652504255e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/right/r_middle_finger_middle.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/right/r_middle_finger_middle.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="r_middle_finger_distal">
+    <inertial>
+      <origin xyz="0.000273616411847607 -3.02074856552096e-05 -0.0121848684418609" rpy="0 0 0" />
+      <mass value="0.0078" />
+      <inertia ixx="5.38224802903959e-07" ixy="-2.79679442692155e-10" ixz="-2.5530464631837e-08" iyy="5.71398964851628e-07" iyz="-2.92327746439665e-08" izz="2.79172555327135e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/right/r_middle_finger_distal.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/right/r_middle_finger_distal.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="r_middle_finger_tip" />
+  <link name="r_ring_finger_proximal">
+    <inertial>
+      <origin xyz="1.83161025031965e-09 -0.00178136940445361 -0.00760138673373379" rpy="0 0 0" />
+      <mass value="0.0116" />
+      <inertia ixx="9.19684021219303e-07" ixy="5.28247185742253e-13" ixz="2.26060089820829e-13" iyy="9.07912667640505e-07" iyz="-9.11687066972155e-09" izz="7.89107764311872e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/right/r_ring_finger_proximal.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/right/r_ring_finger_proximal.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="r_ring_finger_proximal_abd">
+    <inertial>
+      <origin xyz="8.0467514618682e-08 7.30403684727838e-07 -0.0187993794550997" rpy="0 0 0" />
+      <mass value="0.0339" />
+      <inertia ixx="7.0158413388037e-06" ixy="1.13787856174592e-10" ixz="-1.19062498370086e-11" iyy="7.01558877903507e-06" iyz="-1.97233402202639e-10" izz="9.14480410679966e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/right/r_ring_finger_proximal_abd.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/right/r_ring_finger_proximal_abd.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="r_ring_finger_middle">
+    <inertial>
+      <origin xyz="-5.07335390505094e-08 -0.000247886788910862 -0.0190348353019456" rpy="0 0 0" />
+      <mass value="0.0212" />
+      <inertia ixx="2.40525408841305e-06" ixy="4.36771620897454e-11" ixz="-1.01321951276003e-11" iyy="2.47626497450938e-06" iyz="5.57378703986573e-08" izz="6.54181652504255e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/right/r_ring_finger_middle.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/right/r_ring_finger_middle.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="r_ring_finger_distal">
+    <inertial>
+      <origin xyz="0.000273616411847607 -3.02074856552094e-05 -0.0121848684418609" rpy="0 0 0" />
+      <mass value="0.0078" />
+      <inertia ixx="5.38224802903959e-07" ixy="-2.79679442692155e-10" ixz="-2.5530464631837e-08" iyy="5.71398964851628e-07" iyz="-2.92327746439664e-08" izz="2.79172555327135e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/right/r_ring_finger_distal.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/right/r_ring_finger_distal.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="r_ring_finger_tip" />
+  <link name="r_pinky_proximal">
+    <inertial>
+      <origin xyz="-2.12647665764062e-07 -0.00178135647039668 -0.00760144900209861" rpy="0 0 0" />
+      <mass value="0.0116" />
+      <inertia ixx="9.19664045720297e-07" ixy="1.97416924666018e-12" ixz="-5.47629031711395e-12" iyy="9.07907928441544e-07" iyz="-9.11609971605222e-09" izz="7.89108884463772e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/right/r_pinky_proximal.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/right/r_pinky_proximal.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="r_pinky_proximal_abd">
+    <inertial>
+      <origin xyz="1.55646906608809e-06 5.45320202995785e-07 -0.0167849719552996" rpy="0 0 0" />
+      <mass value="0.0304" />
+      <inertia ixx="5.37945679675879e-06" ixy="1.12278427349778e-10" ixz="-1.64165357379841e-10" iyy="5.38012309356491e-06" iyz="-2.32489803821551e-10" izz="8.17709812022935e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/right/r_pinky_proximal_abd.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/right/r_pinky_proximal_abd.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="r_pinky_middle">
+    <inertial>
+      <origin xyz="-3.23236358886277e-07 -0.000264490618234346 -0.0178806678504514" rpy="0 0 0" />
+      <mass value="0.0188" />
+      <inertia ixx="1.98647409646703e-06" ixy="4.62365895207266e-11" ixz="4.73744493481682e-12" iyy="2.05807093165979e-06" iyz="4.70563185910699e-08" izz="5.86414432802369e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/right/r_pinky_middle.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/right/r_pinky_middle.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="r_pinky_distal">
+    <inertial>
+      <origin xyz="0.000273616414030554 -3.02074827007308e-05 -0.0121848684429151" rpy="0 0 0" />
+      <mass value="0.0078" />
+      <inertia ixx="5.38224803026562e-07" ixy="-2.79678599157548e-10" ixz="-2.55304645983229e-08" iyy="5.71398964736008e-07" iyz="-2.92327743254535e-08" izz="2.79172555430584e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/right/r_pinky_distal.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="/home/dezhong/Desktop/RFT/vega_wuji_redball_isaac6/third_party/wuji-description/hand2/hand2_beta1/body/meshes/right/r_pinky_distal.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="r_pinky_tip" />
+  <joint name="r_thumb_cmc_flex" type="revolute">
+    <origin xyz="0.0172096135367909 0.00813796752668306 -0.0164575402574485" rpy="-1.66172905640129 -1.05903134035818 1.99212400148381" />
+    <parent link="r_wrist" />
+    <child link="r_thumb_proximal" />
+    <axis xyz="1 0 0" />
+    <limit lower="-1.1870" upper="1.2910" effort="0.6000" velocity="8.587" />
+  </joint>
+  <joint name="r_thumb_cmc_abd" type="revolute">
+    <origin xyz="0.000247879062961599 -0.000536579546410674 -0.0147535404706145" rpy="0.205291970332105 0.70050871717831 0.0252378802492596" />
+    <parent link="r_thumb_proximal" />
+    <child link="r_thumb_proximal_abd" />
+    <axis xyz="0 1 0" />
+    <limit lower="-1.4840" upper="0.6980" effort="0.6000" velocity="11.1" />
+  </joint>
+  <joint name="r_thumb_mcp" type="revolute">
+    <origin xyz="0 0 -0.032500002798739" rpy="-0.11027974085231 0.0872664625995901 0.567232006897994" />
+    <parent link="r_thumb_proximal_abd" />
+    <child link="r_thumb_middle" />
+    <axis xyz="1 0 0" />
+    <limit lower="-1.0470" upper="1.5700" effort="0.3000" velocity="12.86" />
+  </joint>
+  <joint name="r_thumb_ip" type="revolute">
+    <origin xyz="-4.99999999923513E-05 0.00385197213324594 -0.0347873872356727" rpy="0.110279740852307 0 0" />
+    <parent link="r_thumb_middle" />
+    <child link="r_thumb_distal" />
+    <axis xyz="1 0 0" />
+    <limit lower="-1.0470" upper="1.5700" effort="0.3000" velocity="13.5" />
+  </joint>
+  <joint name="r_thumb_tip_fixed" type="fixed">
+    <origin xyz="0 0 -0.02978" rpy="0 0 0" />
+    <parent link="r_thumb_distal" />
+    <child link="r_thumb_tip" />
+  </joint>
+  <joint name="r_index_finger_mcp_flex" type="revolute">
+    <origin xyz="0.022661 -0.0033252 -0.069975" rpy="-0.039792 -0.13705 0.10041" />
+    <parent link="r_wrist" />
+    <child link="r_index_finger_proximal" />
+    <axis xyz="1 0 0" />
+    <limit lower="-1.0470" upper="1.5700" effort="2.0000" velocity="8.203" />
+  </joint>
+  <joint name="r_index_finger_mcp_abd" type="revolute">
+    <origin xyz="0 -0.00120098018725688 -0.0145000000001075" rpy="0 0 0" />
+    <parent link="r_index_finger_proximal" />
+    <child link="r_index_finger_proximal_abd" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.6980" upper="0.6980" effort="0.2000" velocity="8.11" />
+  </joint>
+  <joint name="r_index_finger_pip" type="revolute">
+    <origin xyz="0 0 -0.0376000000000001" rpy="0 0 0" />
+    <parent link="r_index_finger_proximal_abd" />
+    <child link="r_index_finger_middle" />
+    <axis xyz="1 0 0" />
+    <limit lower="-1.0470" upper="2.0940" effort="0.3000" velocity="12.86" />
+  </joint>
+  <joint name="r_index_finger_dip" type="revolute">
+    <origin xyz="0 0 -0.0295000000000005" rpy="0 0 0" />
+    <parent link="r_index_finger_middle" />
+    <child link="r_index_finger_distal" />
+    <axis xyz="1 0 0" />
+    <limit lower="-1.0470" upper="1.5700" effort="0.3000" velocity="13.5" />
+  </joint>
+  <joint name="r_index_finger_tip_fixed" type="fixed">
+    <origin xyz="0 0 -0.02475" rpy="0 0 0" />
+    <parent link="r_index_finger_distal" />
+    <child link="r_index_finger_tip" />
+  </joint>
+  <joint name="r_middle_finger_mcp_flex" type="revolute">
+    <origin xyz="0.00095202 -0.008303 -0.073915" rpy="-0.03391 0.011037 -0.00071534" />
+    <parent link="r_wrist" />
+    <child link="r_middle_finger_proximal" />
+    <axis xyz="1 0 0" />
+    <limit lower="-1.0470" upper="1.5700" effort="2.0000" velocity="8.203" />
+  </joint>
+  <joint name="r_middle_finger_mcp_abd" type="revolute">
+    <origin xyz="0 -0.00120098018725689 -0.0145000000001074" rpy="0 0 0" />
+    <parent link="r_middle_finger_proximal" />
+    <child link="r_middle_finger_proximal_abd" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.6980" upper="0.6980" effort="0.2000" velocity="8.11" />
+  </joint>
+  <joint name="r_middle_finger_pip" type="revolute">
+    <origin xyz="0 0 -0.0376000000000002" rpy="0 0 0" />
+    <parent link="r_middle_finger_proximal_abd" />
+    <child link="r_middle_finger_middle" />
+    <axis xyz="1 0 0" />
+    <limit lower="-1.0470" upper="2.0940" effort="0.3000" velocity="12.86" />
+  </joint>
+  <joint name="r_middle_finger_dip" type="revolute">
+    <origin xyz="0 0 -0.0295000000000004" rpy="0 0 0" />
+    <parent link="r_middle_finger_middle" />
+    <child link="r_middle_finger_distal" />
+    <axis xyz="1 0 0" />
+    <limit lower="-1.0470" upper="1.5700" effort="0.3000" velocity="13.5" />
+  </joint>
+  <joint name="r_middle_finger_tip_fixed" type="fixed">
+    <origin xyz="0 0 -0.02475" rpy="0 0 0" />
+    <parent link="r_middle_finger_distal" />
+    <child link="r_middle_finger_tip" />
+  </joint>
+  <joint name="r_ring_finger_mcp_flex" type="revolute">
+    <origin xyz="-0.019744 -0.0055929 -0.0654" rpy="-0.016655 0.14163 -0.06832" />
+    <parent link="r_wrist" />
+    <child link="r_ring_finger_proximal" />
+    <axis xyz="1 0 0" />
+    <limit lower="-1.0470" upper="1.5700" effort="2.0000" velocity="8.203" />
+  </joint>
+  <joint name="r_ring_finger_mcp_abd" type="revolute">
+    <origin xyz="0 -0.00120098018725689 -0.0145000000001074" rpy="0 0 0" />
+    <parent link="r_ring_finger_proximal" />
+    <child link="r_ring_finger_proximal_abd" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.6980" upper="0.6980" effort="0.2000" velocity="8.11" />
+  </joint>
+  <joint name="r_ring_finger_pip" type="revolute">
+    <origin xyz="0 0 -0.0376000000000001" rpy="0 0 0" />
+    <parent link="r_ring_finger_proximal_abd" />
+    <child link="r_ring_finger_middle" />
+    <axis xyz="1 0 0" />
+    <limit lower="-1.0470" upper="2.0940" effort="0.3000" velocity="12.86" />
+  </joint>
+  <joint name="r_ring_finger_dip" type="revolute">
+    <origin xyz="0 0 -0.0295000000000005" rpy="0 0 0" />
+    <parent link="r_ring_finger_middle" />
+    <child link="r_ring_finger_distal" />
+    <axis xyz="1 0 0" />
+    <limit lower="-1.0470" upper="1.5700" effort="0.3000" velocity="13.5" />
+  </joint>
+  <joint name="r_ring_finger_tip_fixed" type="fixed">
+    <origin xyz="0 0 -0.02475" rpy="0 0 0" />
+    <parent link="r_ring_finger_distal" />
+    <child link="r_ring_finger_tip" />
+  </joint>
+  <joint name="r_pinky_mcp_flex" type="revolute">
+    <origin xyz="-0.0373506128592677 -0.000733757744184354 -0.0552962100243675" rpy="-0.029937505027186 0.24885623067687 -0.136021040523522" />
+    <parent link="r_wrist" />
+    <child link="r_pinky_proximal" />
+    <axis xyz="1 0 0" />
+    <limit lower="-1.0470" upper="1.5700" effort="2.0000" velocity="8.203" />
+  </joint>
+  <joint name="r_pinky_mcp_abd" type="revolute">
+    <origin xyz="0 -0.00120098018724169 -0.0145000000001571" rpy="0 0 3.62730676665863E-05" />
+    <parent link="r_pinky_proximal" />
+    <child link="r_pinky_proximal_abd" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.6980" upper="0.6980" effort="0.2000" velocity="8.11" />
+  </joint>
+  <joint name="r_pinky_pip" type="revolute">
+    <origin xyz="0.000100000035494024 0 -0.0335999999999994" rpy="0 0 -3.62730284749225E-05" />
+    <parent link="r_pinky_proximal_abd" />
+    <child link="r_pinky_middle" />
+    <axis xyz="1 0 0" />
+    <limit lower="-1.0470" upper="2.0940" effort="0.3000" velocity="12.86" />
+  </joint>
+  <joint name="r_pinky_dip" type="revolute">
+    <origin xyz="0 0 -0.0275000000000001" rpy="0 0 0" />
+    <parent link="r_pinky_middle" />
+    <child link="r_pinky_distal" />
+    <axis xyz="1 0 0" />
+    <limit lower="-1.0470" upper="1.5700" effort="0.3000" velocity="13.5" />
+  </joint>
+  <joint name="r_pinky_tip_fixed" type="fixed">
+    <origin xyz="0 0 -0.02475" rpy="0 0 0" />
+    <parent link="r_pinky_distal" />
+    <child link="r_pinky_tip" />
+  </joint>
+  <joint name="right_wuji_mount" type="fixed">
+    <parent link="R_arm_l8" />
+    <child link="r_wrist" />
+    <origin xyz="0.00019 -0.0039 0.00014" rpy="2.79752 -0.10514 1.57079" />
+  </joint>
+</robot>

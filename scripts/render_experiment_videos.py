@@ -36,7 +36,7 @@ import pyarrow.parquet as pq
 import torch
 
 _REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-for sub in ("src/perception", "src/world_model", "src/critic", "../vla-verifier"):
+for sub in ("src/perception", "src/world_model", "src/critic"):
     p = os.path.abspath(os.path.join(_REPO_ROOT, sub))
     if p not in sys.path:
         sys.path.insert(0, p)
@@ -58,12 +58,6 @@ from fast_1hz_neural_critic import (
     SlidingWindowPerceiverCache,
     SOP_PHASE_NAMES,
     FAULT_CLASSES,
-)
-from generate_meeting_demo_videos import (
-    load_multiview_episode_sampled,
-    generate_video_1_multiview_to_3d_mesh,
-    generate_video_2_failure_and_checkpoint_recovery,
-    generate_video_3_full_sop_success,
 )
 
 
@@ -266,21 +260,28 @@ def main() -> None:
         dpinet.load_state_dict(torch.load(ckpt_path, map_location=device))
     dpinet.eval()
 
-    dex_root = os.path.abspath(os.path.join(_REPO_ROOT, "..", "particle-world-model", "src", "data"))
-    rft_root = os.path.abspath(os.path.join(_REPO_ROOT, "..", "LIDAR - Dexterous Manipulation", "RFT-reference-trajectory"))
+    scratch = os.environ.get("SCRATCH", os.path.expanduser("~/scratch"))
+    dex_candidates = [
+        os.environ.get("DEXYCB_DIR", ""),
+        os.path.join(scratch, "capstone_datasets", "dexycb"),
+        os.path.join(_REPO_ROOT, "data", "dexycb"),
+        os.path.join(_REPO_ROOT, "..", "particle-world-model", "src", "data"),
+    ]
+    dex_root = next((os.path.abspath(p) for p in dex_candidates if p and os.path.exists(p)), os.path.abspath(dex_candidates[-1]))
     artifact_dir = r"C:\Users\sgirase3\.gemini\antigravity\brain\e7f69ebf-966f-4f13-9bb1-2a49fa5258be"
 
-    print("Rendering Video 4: DexYCB 4-Camera RGB-Only -> 3D Reconstruction & Trained DPI-Net Benchmark...")
+    print(f"Rendering Video 4 from {dex_root}: DexYCB 4-Camera RGB-Only -> 3D Reconstruction & Trained DPI-Net Benchmark...")
     v4_path = os.path.join(demo_dir, "demo_4_dexycb_multiview_rgb_to_3d_dpinet.mp4")
     p4_jpg = os.path.join(artifact_dir, "preview_demo4_dexycb_benchmark.jpg") if os.path.exists(artifact_dir) else os.path.join(demo_dir, "preview_demo4.jpg")
     render_video_4_dexycb_multiview_benchmark(dex_root, dpinet, device, v4_path, p4_jpg)
 
-    # Copy/sync the 3 VegaU+Wuji videos into the repo's demo_videos/ folder as well
+    # Copy/sync the 3 VegaU+Wuji videos into the repo's demo_videos/ folder if present outside
     src_demo_dir = os.path.abspath(os.path.join(_REPO_ROOT, "..", "demo_videos"))
-    import shutil
-    for fn in os.listdir(src_demo_dir):
-        if fn.endswith(".mp4"):
-            shutil.copy2(os.path.join(src_demo_dir, fn), os.path.join(demo_dir, fn))
+    if os.path.exists(src_demo_dir):
+        import shutil
+        for fn in os.listdir(src_demo_dir):
+            if fn.endswith(".mp4"):
+                shutil.copy2(os.path.join(src_demo_dir, fn), os.path.join(demo_dir, fn))
 
     print("All 4 Experiment Demo Videos Ready in:", demo_dir, os.listdir(demo_dir))
 

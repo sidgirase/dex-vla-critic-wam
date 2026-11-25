@@ -603,22 +603,51 @@ def audit_191_rft_logs(rft_root: str) -> Dict[str, Any]:
     }
 
 
+def _resolve_default_path(env_key: str, candidates: List[str]) -> str:
+    if os.environ.get(env_key) and os.path.exists(os.environ[env_key]):
+        return os.path.abspath(os.environ[env_key])
+    for c in candidates:
+        if os.path.exists(c):
+            return os.path.abspath(c)
+    return os.path.abspath(candidates[0])
+
+
 def main() -> None:
+    scratch = os.environ.get("SCRATCH", os.path.expanduser("~/scratch"))
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--dexycb_root",
         type=str,
-        default=os.path.abspath(os.path.join(_REPO_ROOT, "..", "particle-world-model", "src", "data")),
+        default=_resolve_default_path(
+            "DEXYCB_DIR",
+            [
+                os.path.join(scratch, "capstone_datasets", "dexycb"),
+                os.path.join(_REPO_ROOT, "data", "dexycb"),
+                os.path.join(_REPO_ROOT, "..", "particle-world-model", "src", "data"),
+            ],
+        ),
     )
     parser.add_argument(
         "--rft_root",
         type=str,
-        default=os.path.abspath(os.path.join(_REPO_ROOT, "..", "LIDAR - Dexterous Manipulation", "RFT-reference-trajectory")),
+        default=_resolve_default_path(
+            "RFT_DIR",
+            [
+                os.path.join(scratch, "capstone_datasets", "RFT-reference-trajectory"),
+                os.path.join(_REPO_ROOT, "..", "LIDAR - Dexterous Manipulation", "RFT-reference-trajectory"),
+            ],
+        ),
     )
     parser.add_argument(
         "--urdf_path",
         type=str,
-        default=os.path.abspath(os.path.join(_REPO_ROOT, "..", "RFT", "vega_wuji_isaac6", "assets", "generated", "vega_u_wuji_hand2.urdf")),
+        default=_resolve_default_path(
+            "URDF_PATH",
+            [
+                os.path.join(_REPO_ROOT, "assets", "vega_u_wuji_hand2.urdf"),
+                os.path.join(_REPO_ROOT, "..", "RFT", "vega_wuji_isaac6", "assets", "generated", "vega_u_wuji_hand2.urdf"),
+            ],
+        ),
     )
     parser.add_argument("--full_pace", action="store_true", help="Run full-scale training on PACE-ICE GPU")
     parser.add_argument("--epochs_wm", type=int, default=5)

@@ -53,26 +53,52 @@ echo " PACE-ICE Node: $(hostname)"
 echo " GPU Assigned:  $(nvidia-smi --query-gpu=name,memory.total --format=csv,noheader)"
 echo "===================================================================="
 
+# 1. Extract bundled DexYCB 25-sequence benchmark pack directly on PACE-ICE (Zero SCP needed!)
+DEXYCB_TARGET="$SCRATCH/capstone_datasets/dexycb"
+if [ ! -d "$DEXYCB_TARGET/20200709-subject-01" ]; then
+    echo "Extracting bundled DexYCB benchmark packs to $DEXYCB_TARGET ..."
+    mkdir -p "$DEXYCB_TARGET"
+    tar -xzf "$REPO_DIR/data/dexycb_pace_labels.tar.gz" -C "$DEXYCB_TARGET"
+    tar -xzf "$REPO_DIR/data/dexycb_pace_rgb.tar.gz" -C "$DEXYCB_TARGET"
+fi
+
+# 2. Download RFT-reference-trajectory directly from HuggingFace on PACE-ICE's 10 Gbps network
 python - <<'PY'
 import os
 from huggingface_hub import snapshot_download
+
 scratch = os.environ.get("SCRATCH", os.path.expanduser("~/scratch"))
-droot = os.path.join(scratch, "capstone_datasets")
-for repo_id, folder in [
-    ("HenryZ07/RFT-reference-trajectory", "RFT-reference-trajectory"),
-    ("birbirll/vega-pipette-fail", "vega-pipette-fail"),
-]:
-    target = os.path.join(droot, folder)
-    if not os.path.exists(os.path.join(target, "meta")):
-        print(f"Downloading {repo_id} -> {target} ...")
-        try:
-            snapshot_download(repo_id=repo_id, repo_type="dataset", local_dir=target)
-        except Exception as e:
-            print(f"Warning on {repo_id}: {e}")
+target = os.path.join(scratch, "capstone_datasets", "RFT-reference-trajectory")
+os.makedirs(target, exist_ok=True)
+
+# Download all 191 simulation logs + metadata + first 12 success & 10 failure episodes (fast ~20s download on PACE)
+allow_patterns = [
+    "meta/*",
+    "logs/*.log",
+    "failure at last/logs/*.log",
+    "data/chunk-000/episode_00000*.parquet",
+    "data/chunk-000/episode_00001[0-5].parquet",
+    "failure at last/data/chunk-000/episode_00000*.parquet",
+    "videos/chunk-000/*/episode_00000*.mp4",
+    "videos/chunk-000/*/episode_00001[0-5].mp4",
+    "failure at last/videos/chunk-000/*/episode_00000*.mp4",
+]
+print(f"Downloading HenryZ07/RFT-reference-trajectory directly from HuggingFace -> {target} ...")
+snapshot_download(
+    repo_id="HenryZ07/RFT-reference-trajectory",
+    repo_type="dataset",
+    local_dir=target,
+    allow_patterns=allow_patterns,
+    max_workers=8,
+)
+print("HuggingFace direct dataset download complete!")
 PY
 
 python "$REPO_DIR/scripts/run_comprehensive_benchmarks.py" \
+    --dexycb_root "$DEXYCB_TARGET" \
     --rft_root "$SCRATCH/capstone_datasets/RFT-reference-trajectory" \
+    --urdf_path "$REPO_DIR/assets/vega_u_wuji_hand2.urdf" \
+    --full_pace \
     --epochs_wm 100 \
     --epochs_critic 100
 
