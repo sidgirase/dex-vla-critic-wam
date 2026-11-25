@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+.env
+*.tar.gz
+*.zip
+*.parquet
+logs/
+*.err
+*.out
+.DS_Store
