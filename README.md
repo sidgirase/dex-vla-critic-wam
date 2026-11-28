@@ -71,37 +71,42 @@ dex-vla-critic-wam/
 
 ---
 
-## Verifiable PACE-ICE CUDA GPU Benchmark Results (100-Epoch Production Run)
+## Verifiable PACE-ICE CUDA GPU Benchmark Results (Run #1 Long-Horizon 2.0s & Run #2 Short-Horizon 0.5s + 2.09B Teacher VLM)
 
-All metrics below are reproduced in [`results/comprehensive_benchmark_metrics.json`](results/comprehensive_benchmark_metrics.json) from our 100-epoch CUDA GPU run on **Georgia Tech PACE-ICE**:
+All metrics and `.pt` checkpoints below are preserved in [`results/run_1_pace_cuda_metrics.json`](results/run_1_pace_cuda_metrics.json) ([`models/run_1_pace_cuda/`](models/run_1_pace_cuda/)), [`results/run_2_pace_cuda_metrics.json`](results/run_2_pace_cuda_metrics.json) ([`models/run_2_pace_cuda/`](models/run_2_pace_cuda/)), and [`results/comprehensive_benchmark_metrics.json`](results/comprehensive_benchmark_metrics.json) from our 100-epoch CUDA GPU runs on **Georgia Tech PACE-ICE (`NVIDIA H100 80GB` & `NVIDIA L40S 46GB`)**:
 
 ### 1. Multi-View 2D RGB $\rightarrow$ 3D Reconstruction Verification (`DexYCB` 487 Frames & `VegaU+Wuji` 1,422 Samples)
-| Benchmark Metric | Dataset | Evaluated Samples | Result |
+| Benchmark Metric | Dataset | Evaluated Samples | PACE-ICE CUDA Result |
 | :--- | :--- | :---: | :---: |
 | **4-Camera RGB-Only DLT SVD 3D Hand Triangulation Error (MPJPE)** | `DexYCB` (`20200709-subject-01`) | `487` frames | **`2.17 mm`** vs. 8-Cam 3D Ground Truth |
 | **4-Camera RGB-Only 3D Visual-Hull Object Chamfer Distance ($\text{CD} \times 10^{-3}$)** | `DexYCB` (`20200709-subject-01`) | `487` frames | **`0.6407 \times 10^{-3}`** (`F-Score@15mm = 59.67%`) |
 | **Leave-One-Camera-Out (5th Camera Held Out) 2D Reprojection IoU** | `DexYCB` (Held-Out `Cam 5`) | `487` frames | **`45.02%` IoU** (`18.85 px` centroid error) |
-| **Exact 59-Joint $SE(3)$ URDF FK + `MultiViewObjectPoseNet` Pipette Axis Cosine Similarity** | `RFT-reference-trajectory` (4-Cam RGB) | `1,422` samples | **`0.9365`** (`59` URDF joints / `54` action DoF) |
+| **Exact 59-Joint $SE(3)$ URDF FK + `MultiViewObjectPoseNet` 3D Pipette Tracking** | `RFT-reference-trajectory` (4-Cam RGB) | `1,422` samples | **`98.57 mm` RMSE / `0.9367` Axis Cosine Similarity** |
 
-### 2. Cross-Embodiment World Model Benchmark (`DPINet` vs. `PointTransformer` on Identical Held-Out `vega_test` Split)
-| World Model Configuration | Training Transitions | Held-Out Test Split | Displacement MSE ($\times 10^{-3} \downarrow$) | Chamfer Distance ($\text{CD} \times 10^{-3} \downarrow$) | Sinkhorn EMD ($\times 10^{-3} \downarrow$) | Improvement vs. Baseline |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **1. `PointTransformer` Baseline (VegaU+Wuji Robot-Only)** | `1,125` | `282` (`vega_test`) | `2.6154` | `11.9208` | `53.4802` | Baseline (`0.0%`) |
-| **2. `DPINet` (VegaU+Wuji Robot-Only, No Human Data)** | `1,125` | `282` (`vega_test`) | `2.5556` | `10.0901` | `48.4807` | **`-15.4%` Lower CD** *(Equivariant Graph > PointTransformer)* |
-| **3. `DPINet` 1:1 Co-Trained (`DexYCB` Human + `VegaU+Wuji` Robot)** | **`1,548`** (`1,125` Robot + `423` Human) | `282` (`vega_test`) | **`1.2958`** | **`5.6132`** | **`37.7317`** | **`-52.9%` vs. PointTransformer / `-44.4%` vs. Robot-Only!** |
-| **4. `DPINet` on `DexYCB` (8-Cam RGB-D Ground Truth)** | `423` | `106` (`dex_test`) | `0.0533` | `0.1839` | `39.0317` | RGB-D Oracle Upper Bound |
-| **5. `DPINet` on `DexYCB` (4-Cam RGB-Only Visual-Hull Particles)** | `423` | `106` (`dex_test`) | `1.5334` | `1.4029` | `54.1887` | RGB-Only 3D Particle Dynamics Verified |
+### 2. Cross-Embodiment World Model Benchmark (`DPINet` vs. `PointTransformer` on Identical Held-Out `282`-Sample `vega_test` Split)
+We benchmark two complementary prediction horizons on PACE-ICE CUDA GPUs:
+* **Run #2 ($\Delta t = 0.5\text{ s}$ Short-Horizon Step, Tuned $r=12\text{ cm}, k=20$ + Damped Gaussian Contact Kernel):** Evaluates fine-grained single-step contact accuracy.
+* **Run #1 ($\Delta t = 2.0\text{ s}$ Long-Horizon Step, $r=7.5\text{ cm}, k=12$):** Evaluates multi-second drift suppression where 1:1 human-robot co-training provides maximum regularization.
 
-### 3. 1 Hz Multimodal Neural Critic + Perceiver Token Cache + SAGE Visual Grounding (`1,422` 4-Camera Windows)
-| Critic Metric | Train / Held-Out Test Split | PACE-ICE CUDA GPU Result |
+| World Model Configuration | Test Split | **Run #2 ($\Delta t = 0.5\text{ s}$) Chamfer Distance ($\times 10^{-3} \downarrow$)** | **Run #2 ($\Delta t = 0.5\text{ s}$) Sinkhorn EMD ($\times 10^{-3} \downarrow$)** | **Run #1 ($\Delta t = 2.0\text{ s}$) Chamfer Distance ($\times 10^{-3} \downarrow$)** | Key Scientific Finding |
+| :--- | :---: | :---: | :---: | :---: | :--- |
+| **1. `PointTransformer` Baseline (Robot-Only)** | `282` (`vega_test`) | `1.8459` (`MSE = 0.4182`) | `27.7770` | `11.9208` (`EMD = 53.48`) | Global self-attention without local edge vectors suffers higher contact error. |
+| **2. `DPINet` (VegaU+Wuji Robot-Only)** | `282` (`vega_test`) | **`1.2892`** (`MSE = 0.3006`) | **`25.1840`** | `10.0901` (`EMD = 48.48`) | **Beats `PointTransformer` by `-30.2%` CD at $0.5\text{s}$ and `-15.4%` CD at $2.0\text{s}$!** |
+| **3. `DPINet` 1:1 Co-Trained (`DexYCB` Human + `VegaU` Robot)** | `282` (`vega_test`) | **`1.2881` (`MSE = 0.2928`, BEST)** | `25.4618` | **`5.6132` (`EMD = 37.73`, BEST)** | **`-30.2%` vs. PT at $0.5\text{s}$, and `-44.4%` vs. Robot-Only (`-52.9%` vs. PT) over $2.0\text{s}$ horizon!** |
+| **4. `DPINet` on `DexYCB` (8-Cam RGB-D Ground Truth)** | `106` (`dex_test`) | **`0.1628`** (`MSE = 0.0464`) | **`38.5947`** | `0.1839` (`EMD = 39.03`) | RGB-D Oracle Upper Bound (`-11.5%` lower CD in Run #2). |
+| **5. `DPINet` on `DexYCB` (4-Cam RGB-Only Visual-Hull)** | `106` (`dex_test`) | **`0.8305`** (`MSE = 1.6811`) | **`51.4565`** | `1.4029` (`EMD = 54.19`) | **`-40.8%` lower RGB-Only CD in Run #2 (`1.4029 -> 0.8305 x 10^-3`)!** |
+
+### 3. Two-Tier 1 Hz Multimodal Critic: 2.09B Foundation Teacher VLM (`InternVL3-2B-hf`) & 397K Distilled Student (`1,422` Windows)
+| Critic Metric | **Tier 1: Distilled Student (`Fast1HzNeuralCritic`, `397K` params)** | **Tier 2: Foundation Teacher VLM (`OpenGVLab/InternVL3-2B-hf`, `2.09B` params)** |
 | :--- | :---: | :---: |
-| **10-Phase Clinical SOP Classification Accuracy** | `1,066` train / `356` test | **`91.57%`** *(vs. 80.0% prior 5-phase baseline)* |
-| **Phase-Transition Boundary Recall ($\pm 1$ Phase)** | `1,066` train / `356` test | **`99.72%`** *(vs. 90.0% prior 5-phase baseline)* |
-| **3-Class Fault Classification Accuracy & Failure Detection F1** | `1,066` train / `356` test | **`100.0%` Accuracy / `100.0%` F1** |
-| ***SeeTraceAct* 2D Future Trajectory L1 Error** | `1,066` train / `356` test | **`0.0093`** (`0.93%` normalized image coordinates) |
-| ***SAGE* Sink-Aware Visual Grounding Ratio ($\alpha_{\text{ground}}$)** | `356` test windows | **`1.0000` (`100%` visual attention vs. `[SINK]`)** |
-| **Uncached 4-Camera Sliding-Window Latency** | CUDA GPU wall-clock | **`13.28 ms`** (`75.32 Hz`) |
-| **Perceiver Cached 1 Hz Delta Latency & Speedup** | CUDA GPU wall-clock | **`0.91 ms`** (`1,102.51 Hz`, **`14.64x` CUDA Speedup**) |
+| **Role in FlowConductor** | Continuous `1–10 Hz` phase, slip & 2D trace reflex monitor fused with 54-DoF & DPI-Net | Open-vocabulary semantic & spatial verifier (e.g., rack row/col ID, novel SOP prompts) |
+| **10-Phase Clinical SOP Classification Accuracy** | **`91.85%` (Run #2) / `91.57%` (Run #1)** *(vs. 80.0% prior 5-phase baseline)* | Open-vocabulary zero-shot / rubric-prompted phase & rationale generation |
+| **Phase-Transition Boundary Recall ($\pm 1$ Phase)** | **`99.72%`** (`355 / 356` held-out test windows) | Verified on 4-camera composite grids |
+| **3-Class Fault Accuracy & Failure Detection F1** | **`100.0%` Accuracy / `100.0%` F1** | Outputs structured `NOMINAL / SLIP / DROP` + FlowConductor recovery command |
+| ***SeeTraceAct* 2D Future Trajectory L1 Error** | **`0.0093 – 0.0095`** (`<1%` normalized image error) | Guided by Student 2D trace overlay |
+| ***SAGE* Sink-Aware Visual Grounding Ratio** | **`1.0000` (`100%` visual attention vs. `[SINK]`)** | Prompt-grounded on 2x2 4-camera view + millimeter telemetry |
+| **Uncached 4-Frame Window Latency (PACE L40S CUDA)** | **`9.73 ms`** (`102.75 Hz`) | **`1,225.71 ms` (`0.82 Hz` — fails 1 Hz without caching!)** |
+| **Cached 1 Hz Keyframe Delta Latency (PACE L40S CUDA)** | **`0.68 ms` (`1,473.13 Hz`, `14.34x` speedup)** | **`307.66 ms` (`3.25 Hz`, `4.0x` speedup, `4.28 GB` BF16 VRAM — meets $\ge 1\text{ Hz}$!)** |
 
 ---
 
