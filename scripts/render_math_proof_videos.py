@@ -821,27 +821,27 @@ def main() -> None:
 
     pose_net = MultiViewObjectPoseNet(in_dim=38, hidden_dim=128).to(device)
     if os.path.exists(os.path.join(models_dir, "multiview_pose_net_best.pt")):
-        pose_net.load_state_dict(torch.load(os.path.join(models_dir, "multiview_pose_net_best.pt"), map_location=device))
+        pose_net.load_state_dict(torch.load(os.path.join(models_dir, "multiview_pose_net_best.pt"), map_location=device), strict=False)
     pose_net.eval()
 
     dpinet_co = DPINetWorldModel(hidden_dim=128, num_layers=3).to(device)
     if os.path.exists(os.path.join(models_dir, "dpinet_cotrained_best.pt")):
-        dpinet_co.load_state_dict(torch.load(os.path.join(models_dir, "dpinet_cotrained_best.pt"), map_location=device))
+        dpinet_co.load_state_dict(torch.load(os.path.join(models_dir, "dpinet_cotrained_best.pt"), map_location=device), strict=False)
     dpinet_co.eval()
 
     dpinet_ro = DPINetWorldModel(hidden_dim=128, num_layers=3).to(device)
     if os.path.exists(os.path.join(models_dir, "dpinet_vegawuji_only.pt")):
-        dpinet_ro.load_state_dict(torch.load(os.path.join(models_dir, "dpinet_vegawuji_only.pt"), map_location=device))
+        dpinet_ro.load_state_dict(torch.load(os.path.join(models_dir, "dpinet_vegawuji_only.pt"), map_location=device), strict=False)
     dpinet_ro.eval()
 
     pt_base = PointTransformerWorldModel(hidden_dim=128, num_layers=3).to(device)
     if os.path.exists(os.path.join(models_dir, "point_transformer_vega.pt")):
-        pt_base.load_state_dict(torch.load(os.path.join(models_dir, "point_transformer_vega.pt"), map_location=device))
+        pt_base.load_state_dict(torch.load(os.path.join(models_dir, "point_transformer_vega.pt"), map_location=device), strict=False)
     pt_base.eval()
 
     critic = Fast1HzNeuralCritic(d_model=128, num_latents_per_cam=8, proprio_physics_dim=114).to(device)
     if os.path.exists(os.path.join(models_dir, "fast_1hz_critic_best.pt")):
-        critic.load_state_dict(torch.load(os.path.join(models_dir, "fast_1hz_critic_best.pt"), map_location=device))
+        critic.load_state_dict(torch.load(os.path.join(models_dir, "fast_1hz_critic_best.pt"), map_location=device), strict=False)
     critic.eval()
 
     out_img_dir = artifact_dir if os.path.exists(artifact_dir) else proof_dir

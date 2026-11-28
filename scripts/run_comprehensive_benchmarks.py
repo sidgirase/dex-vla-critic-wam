@@ -923,6 +923,7 @@ def main() -> None:
     log_audit = audit_191_rft_logs(args.rft_root)
 
     full_report = {
+        "run_id": "Run_2_PACE_ICE_CUDA_Tuned_GaussianKernel_05s" if is_full else "Local_CPU_Preflight",
         "execution_device": str(device),
         "benchmark_1_dexycb_multiview_2d_to_3d_reconstruction": dex_recon_bench,
         "benchmark_2_vegawuji_exact_urdf_and_multiview_posenet": posenet_metrics,
@@ -934,6 +935,13 @@ def main() -> None:
     report_path = os.path.join(results_dir, "comprehensive_benchmark_metrics.json")
     with open(report_path, "w", encoding="utf-8") as f:
         json.dump(full_report, f, indent=2)
+
+    if is_full:
+        run2_path = os.path.join(results_dir, "run_2_pace_cuda_metrics.json")
+        with open(run2_path, "w", encoding="utf-8") as f:
+            json.dump(full_report, f, indent=2)
+        print(f"[SUCCESS] Saved Run #2 PACE-ICE metrics to {run2_path} (Run #1 preserved in results/run_1_pace_cuda_metrics.json)")
+
     print(f"\n[SUCCESS] All models trained and saved to {models_dir}/")
     print(f"[SUCCESS] Full verifiable metrics saved to {report_path}")
 

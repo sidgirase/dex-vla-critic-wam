@@ -110,5 +110,6 @@ python "$REPO_DIR/scripts/run_comprehensive_benchmarks.py" \
     --epochs_critic 100
 
 python "$REPO_DIR/scripts/render_experiment_videos.py"
+python "$REPO_DIR/scripts/render_math_proof_videos.py"
 
 echo "[COMPLETE] PACE-ICE GPU Training, Benchmarking & Video Rendering Finished!"

@@ -84,8 +84,7 @@ def build_particle_radius_graph(
 
     edge_rel = all_pos[dst_idx] - all_pos[src_idx]
     edge_dist = dist[src_idx, dst_idx][:, None]
-    edge_src_disp = disp_feat[src_idx]
-    edge_attr_np = np.hstack([edge_rel, edge_dist, edge_src_disp]).astype(np.float32)
+    edge_attr_np = np.hstack([edge_rel, edge_dist]).astype(np.float32)
 
     x = torch.from_numpy(x_np).to(device)
     edge_index = torch.tensor(np.stack([src_idx, dst_idx], axis=0), dtype=torch.long, device=device)
@@ -96,7 +95,7 @@ def build_particle_radius_graph(
 class DPINetMessagePassingLayer(nn.Module):
     """Single message-passing step of DPI-Net with Edge MLP, Mean Neighborhood Aggregation, and Node MLP."""
 
-    def __init__(self, hidden_dim: int, edge_dim: int = 7):
+    def __init__(self, hidden_dim: int, edge_dim: int = 4):
         super().__init__()
         self.hidden_dim = hidden_dim
         self.edge_mlp = nn.Sequential(
@@ -134,7 +133,7 @@ class DPINetWorldModel(nn.Module):
     Dynamic Particle Interaction Network (DPI-Net) for Cross-Embodiment Dexterous World Modeling.
     """
 
-    def __init__(self, node_dim: int = 7, edge_dim: int = 7, hidden_dim: int = 128, num_layers: int = 3):
+    def __init__(self, node_dim: int = 7, edge_dim: int = 4, hidden_dim: int = 128, num_layers: int = 3):
         super().__init__()
         self.node_encoder = nn.Sequential(
             nn.Linear(node_dim, hidden_dim),
@@ -158,14 +157,14 @@ class DPINetWorldModel(nn.Module):
             h = layer(h, edge_index, edge_attr)
         delta_gnn = self.decoder(h)
 
-        # Equivariant Gaussian contact-impulse kernel: propagates hand particle displacement
+        # Equivariant Gaussian contact-impulse kernel: propagates hand particle displacement (x[src, 3:6])
         # along active contact edges with damped normalization so non-contacting objects (>6cm) remain stationary
         src, dst = edge_index[0], edge_index[1]
         num_nodes = x.size(0)
         dist_m = edge_attr[:, 3:4]
         is_hand_src = 1.0 - x[src, 6:7]
         dist_w = torch.exp(-((dist_m / 0.042) ** 2)) * is_hand_src
-        weighted_disp = dist_w * edge_attr[:, 4:7]
+        weighted_disp = dist_w * x[src, 3:6]
 
         imp_sum = torch.zeros((num_nodes, 3), device=x.device, dtype=x.dtype)
         imp_w = torch.zeros((num_nodes, 1), device=x.device, dtype=x.dtype)

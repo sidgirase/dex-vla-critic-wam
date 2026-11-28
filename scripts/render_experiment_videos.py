@@ -257,7 +257,7 @@ def main() -> None:
     dpinet = DPINetWorldModel(hidden_dim=128, num_layers=3).to(device)
     ckpt_path = os.path.join(models_dir, "dpinet_cotrained_best.pt")
     if os.path.exists(ckpt_path):
-        dpinet.load_state_dict(torch.load(ckpt_path, map_location=device))
+        dpinet.load_state_dict(torch.load(ckpt_path, map_location=device), strict=False)
     dpinet.eval()
 
     scratch = os.environ.get("SCRATCH", os.path.expanduser("~/scratch"))
