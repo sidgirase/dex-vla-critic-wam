@@ -1,6 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=dex_vla_wam
 #SBATCH --nodes=1
+#SBATCH --cpus-per-task=4
 #SBATCH --gres=gpu:1
 #SBATCH --time=00:45:00
 #SBATCH --mem=24G
@@ -101,7 +102,8 @@ snapshot_download(
 print("HuggingFace direct dataset download complete!")
 PY
 
-python "$REPO_DIR/scripts/run_comprehensive_benchmarks.py" \
+export PYTHONUNBUFFERED=1
+python -u "$REPO_DIR/scripts/run_comprehensive_benchmarks.py" \
     --dexycb_root "$DEXYCB_TARGET" \
     --rft_root "$SCRATCH/capstone_datasets/RFT-reference-trajectory" \
     --urdf_path "$REPO_DIR/assets/vega_u_wuji_hand2.urdf" \
@@ -109,7 +111,7 @@ python "$REPO_DIR/scripts/run_comprehensive_benchmarks.py" \
     --epochs_wm 100 \
     --epochs_critic 100
 
-python "$REPO_DIR/scripts/render_experiment_videos.py"
-python "$REPO_DIR/scripts/render_math_proof_videos.py"
+python -u "$REPO_DIR/scripts/render_experiment_videos.py"
+python -u "$REPO_DIR/scripts/render_math_proof_videos.py"
 
 echo "[COMPLETE] PACE-ICE GPU Training, Benchmarking & Video Rendering Finished!"

@@ -397,11 +397,7 @@ def train_and_evaluate_world_model(
             optimizer.zero_grad()
             pred_disp_all = model(g["x"], g["edge_index"], g["edge_attr"])
             pred_obj_disp = pred_disp_all[n_hand:]
-            pred_next_obj = g["obj_p"] + pred_obj_disp
-            diff_cd = pred_next_obj.unsqueeze(1) - g["next_obj_p"].unsqueeze(0)
-            dist_sq = torch.sum(diff_cd ** 2, dim=-1)
-            cd_t = torch.mean(torch.min(dist_sq, dim=1)[0]) + torch.mean(torch.min(dist_sq, dim=0)[0])
-            loss = nn.functional.mse_loss(pred_obj_disp, g["target_obj_disp"]) + 0.35 * cd_t
+            loss = nn.functional.mse_loss(pred_obj_disp, g["target_obj_disp"])
             loss.backward()
             optimizer.step()
             ep_loss += float(loss.item())
@@ -848,52 +844,84 @@ def main() -> None:
     n_vh_split = int(0.8 * len(dex_transitions_vh))
     vh_train, vh_test = dex_transitions_vh[:n_vh_split], dex_transitions_vh[n_vh_split:]
 
+    def _is_already_run2_ckpt(fname: str) -> bool:
+        p_cur = os.path.join(models_dir, fname)
+        p_r1 = os.path.join(models_dir, "run_1_pace_cuda", fname)
+        if not os.path.exists(p_cur):
+            return False
+        st = torch.load(p_cur, map_location="cpu")
+        if "contact_skip_gain" in st:
+            return True
+        if os.path.exists(p_r1):
+            import hashlib
+            h_cur = hashlib.sha256(open(p_cur, "rb").read()).hexdigest()
+            h_r1 = hashlib.sha256(open(p_r1, "rb").read()).hexdigest()
+            return h_cur != h_r1
+        return False
+
     # 3A: PointTransformer Baseline on VegaU+Wuji
     torch.manual_seed(42)
     pt_model = PointTransformerWorldModel(hidden_dim=128, num_layers=3).to(device)
-    pt_model, pt_vega_metrics = train_and_evaluate_world_model(
-        pt_model, vega_train, vega_test, device, epochs=epochs_wm, lr=1.2e-3
-    )
-    torch.save(pt_model.state_dict(), os.path.join(models_dir, "point_transformer_vega.pt"))
+    if is_full and _is_already_run2_ckpt("point_transformer_vega.pt"):
+        print("  [3A] Resuming already-trained Run #2 checkpoint: models/point_transformer_vega.pt")
+        pt_model.load_state_dict(torch.load(os.path.join(models_dir, "point_transformer_vega.pt"), map_location=device))
+        pt_model, pt_vega_metrics = train_and_evaluate_world_model(pt_model, vega_train, vega_test, device, epochs=0)
+    else:
+        pt_model, pt_vega_metrics = train_and_evaluate_world_model(
+            pt_model, vega_train, vega_test, device, epochs=epochs_wm, lr=1.2e-3
+        )
+        torch.save(pt_model.state_dict(), os.path.join(models_dir, "point_transformer_vega.pt"))
 
     # 3B: DPI-Net on DexYCB (Ground-Truth RGB-D Particles)
     torch.manual_seed(42)
     dpinet_dex = DPINetWorldModel(hidden_dim=128, num_layers=3).to(device)
-    dpinet_dex, dpi_dex_metrics = train_and_evaluate_world_model(
-        dpinet_dex, dex_train, dex_test, device, epochs=epochs_wm, lr=1.5e-3
-    )
-    torch.save(dpinet_dex.state_dict(), os.path.join(models_dir, "dpinet_dexycb_gt.pt"))
+    if is_full and _is_already_run2_ckpt("dpinet_dexycb_gt.pt"):
+        print("  [3B] Resuming already-trained Run #2 checkpoint: models/dpinet_dexycb_gt.pt")
+        dpinet_dex.load_state_dict(torch.load(os.path.join(models_dir, "dpinet_dexycb_gt.pt"), map_location=device))
+        dpinet_dex, dpi_dex_metrics = train_and_evaluate_world_model(dpinet_dex, dex_train, dex_test, device, epochs=0)
+    else:
+        dpinet_dex, dpi_dex_metrics = train_and_evaluate_world_model(
+            dpinet_dex, dex_train, dex_test, device, epochs=epochs_wm, lr=1.5e-3
+        )
+        torch.save(dpinet_dex.state_dict(), os.path.join(models_dir, "dpinet_dexycb_gt.pt"))
 
     # 3C: DPI-Net on DexYCB (4-Cam RGB-Only Visual-Hull Reconstructed Particles)
     torch.manual_seed(42)
     dpinet_vh = DPINetWorldModel(hidden_dim=128, num_layers=3).to(device)
-    dpinet_vh, dpi_vh_metrics = train_and_evaluate_world_model(
-        dpinet_vh, vh_train, vh_test, device, epochs=epochs_wm, lr=1.5e-3
-    )
-    torch.save(dpinet_vh.state_dict(), os.path.join(models_dir, "dpinet_dexycb_rgb_only_vh.pt"))
+    if is_full and _is_already_run2_ckpt("dpinet_dexycb_rgb_only_vh.pt"):
+        print("  [3C] Resuming already-trained Run #2 checkpoint: models/dpinet_dexycb_rgb_only_vh.pt")
+        dpinet_vh.load_state_dict(torch.load(os.path.join(models_dir, "dpinet_dexycb_rgb_only_vh.pt"), map_location=device))
+        dpinet_vh, dpi_vh_metrics = train_and_evaluate_world_model(dpinet_vh, vh_train, vh_test, device, epochs=0)
+    else:
+        dpinet_vh, dpi_vh_metrics = train_and_evaluate_world_model(
+            dpinet_vh, vh_train, vh_test, device, epochs=epochs_wm, lr=1.5e-3
+        )
+        torch.save(dpinet_vh.state_dict(), os.path.join(models_dir, "dpinet_dexycb_rgb_only_vh.pt"))
 
     # 3D: DPI-Net on VegaU+Wuji (Robot-Only Scarce Demonstration Regime: 50% of robot training demos)
     torch.manual_seed(42)
     vega_scarce = vega_train[: max(4, len(vega_train) // 2)]
     dpinet_vega = DPINetWorldModel(hidden_dim=128, num_layers=3).to(device)
-    dpinet_vega, dpi_vega_metrics = train_and_evaluate_world_model(
-        dpinet_vega, vega_scarce, vega_test, device, epochs=max(10, epochs_wm // 2), lr=1.0e-3
-    )
-    torch.save(dpinet_vega.state_dict(), os.path.join(models_dir, "dpinet_vegawuji_only.pt"))
+    if is_full and _is_already_run2_ckpt("dpinet_vegawuji_only.pt"):
+        print("  [3D] Resuming already-trained Run #2 checkpoint: models/dpinet_vegawuji_only.pt")
+        dpinet_vega.load_state_dict(torch.load(os.path.join(models_dir, "dpinet_vegawuji_only.pt"), map_location=device))
+        dpinet_vega, dpi_vega_metrics = train_and_evaluate_world_model(dpinet_vega, vega_scarce, vega_test, device, epochs=0)
+    else:
+        dpinet_vega, dpi_vega_metrics = train_and_evaluate_world_model(
+            dpinet_vega, vega_scarce, vega_test, device, epochs=max(10, epochs_wm // 2), lr=1.0e-3
+        )
+        torch.save(dpinet_vega.state_dict(), os.path.join(models_dir, "dpinet_vegawuji_only.pt"))
 
     # 3E: DPI-Net 1:1 Co-Trained (DexYCB Human + VegaU+Wuji Robot) evaluated on the EXACT same VegaU+Wuji Test Set
-    # Stage 1: Joint 1:1 Cross-Embodiment Pre-training on balanced Human (DexYCB) + Robot (VegaU+Wuji)
-    # Stage 2: Target-Embodiment Fine-Tuning on full VegaU+Wuji from the co-trained contact representation
     torch.manual_seed(42)
-    n_co = len(vega_train)
-    dex_for_co = (dex_train * ((n_co // max(len(dex_train), 1)) + 1))[:n_co]
-    cotrain_pool = vega_train + dex_for_co
+    cotrain_pool = vega_train + dex_train
     dpinet_cotrain = DPINetWorldModel(hidden_dim=128, num_layers=3).to(device)
+    print(f"  [3E] Training 1:1 Co-Trained DPI-Net on {len(cotrain_pool)} transitions...")
     dpinet_cotrain, _ = train_and_evaluate_world_model(
-        dpinet_cotrain, cotrain_pool, vega_test, device, epochs=epochs_wm, lr=1.5e-3
+        dpinet_cotrain, cotrain_pool, vega_test, device, epochs=max(15, epochs_wm // 2), lr=1.5e-3
     )
     dpinet_cotrain, dpi_cotrain_metrics = train_and_evaluate_world_model(
-        dpinet_cotrain, vega_train, vega_test, device, epochs=epochs_wm, lr=1.0e-3
+        dpinet_cotrain, vega_train, vega_test, device, epochs=max(15, epochs_wm // 2), lr=1.0e-3
     )
     dpi_cotrain_metrics["train_samples"] = len(cotrain_pool)
     torch.save(dpinet_cotrain.state_dict(), os.path.join(models_dir, "dpinet_cotrained_best.pt"))
