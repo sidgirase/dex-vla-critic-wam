@@ -66,8 +66,42 @@ dex-vla-critic-wam/
 │   └── run_pace_gpu.sbatch                      # Georgia Tech PACE-ICE L40S/A100/H100 GPU SLURM submission script
 ├── models/                                      # Trained PyTorch model weights (.pt)
 ├── results/                                     # Verifiable JSON benchmark reports & reconstructed 3D .OBJ meshes
-└── demo_videos/                                 # 720p MP4 experiment videos for weekly lab meetings
+└── demo_videos/                                 # 720p MP4 experiment & mathematical proof videos for weekly lab meetings
 ```
+
+---
+
+## Verifiable PACE-ICE CUDA GPU Benchmark Results (100-Epoch Production Run)
+
+All metrics below are reproduced in [`results/comprehensive_benchmark_metrics.json`](results/comprehensive_benchmark_metrics.json) from our 100-epoch CUDA GPU run on **Georgia Tech PACE-ICE**:
+
+### 1. Multi-View 2D RGB $\rightarrow$ 3D Reconstruction Verification (`DexYCB` 487 Frames & `VegaU+Wuji` 1,422 Samples)
+| Benchmark Metric | Dataset | Evaluated Samples | Result |
+| :--- | :--- | :---: | :---: |
+| **4-Camera RGB-Only DLT SVD 3D Hand Triangulation Error (MPJPE)** | `DexYCB` (`20200709-subject-01`) | `487` frames | **`2.17 mm`** vs. 8-Cam 3D Ground Truth |
+| **4-Camera RGB-Only 3D Visual-Hull Object Chamfer Distance ($\text{CD} \times 10^{-3}$)** | `DexYCB` (`20200709-subject-01`) | `487` frames | **`0.6407 \times 10^{-3}`** (`F-Score@15mm = 59.67%`) |
+| **Leave-One-Camera-Out (5th Camera Held Out) 2D Reprojection IoU** | `DexYCB` (Held-Out `Cam 5`) | `487` frames | **`45.02%` IoU** (`18.85 px` centroid error) |
+| **Exact 59-Joint $SE(3)$ URDF FK + `MultiViewObjectPoseNet` Pipette Axis Cosine Similarity** | `RFT-reference-trajectory` (4-Cam RGB) | `1,422` samples | **`0.9365`** (`59` URDF joints / `54` action DoF) |
+
+### 2. Cross-Embodiment World Model Benchmark (`DPINet` vs. `PointTransformer` on Identical Held-Out `vega_test` Split)
+| World Model Configuration | Training Transitions | Held-Out Test Split | Displacement MSE ($\times 10^{-3} \downarrow$) | Chamfer Distance ($\text{CD} \times 10^{-3} \downarrow$) | Sinkhorn EMD ($\times 10^{-3} \downarrow$) | Improvement vs. Baseline |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **1. `PointTransformer` Baseline (VegaU+Wuji Robot-Only)** | `1,125` | `282` (`vega_test`) | `2.6154` | `11.9208` | `53.4802` | Baseline (`0.0%`) |
+| **2. `DPINet` (VegaU+Wuji Robot-Only, No Human Data)** | `1,125` | `282` (`vega_test`) | `2.5556` | `10.0901` | `48.4807` | **`-15.4%` Lower CD** *(Equivariant Graph > PointTransformer)* |
+| **3. `DPINet` 1:1 Co-Trained (`DexYCB` Human + `VegaU+Wuji` Robot)** | **`1,548`** (`1,125` Robot + `423` Human) | `282` (`vega_test`) | **`1.2958`** | **`5.6132`** | **`37.7317`** | **`-52.9%` vs. PointTransformer / `-44.4%` vs. Robot-Only!** |
+| **4. `DPINet` on `DexYCB` (8-Cam RGB-D Ground Truth)** | `423` | `106` (`dex_test`) | `0.0533` | `0.1839` | `39.0317` | RGB-D Oracle Upper Bound |
+| **5. `DPINet` on `DexYCB` (4-Cam RGB-Only Visual-Hull Particles)** | `423` | `106` (`dex_test`) | `1.5334` | `1.4029` | `54.1887` | RGB-Only 3D Particle Dynamics Verified |
+
+### 3. 1 Hz Multimodal Neural Critic + Perceiver Token Cache + SAGE Visual Grounding (`1,422` 4-Camera Windows)
+| Critic Metric | Train / Held-Out Test Split | PACE-ICE CUDA GPU Result |
+| :--- | :---: | :---: |
+| **10-Phase Clinical SOP Classification Accuracy** | `1,066` train / `356` test | **`91.57%`** *(vs. 80.0% prior 5-phase baseline)* |
+| **Phase-Transition Boundary Recall ($\pm 1$ Phase)** | `1,066` train / `356` test | **`99.72%`** *(vs. 90.0% prior 5-phase baseline)* |
+| **3-Class Fault Classification Accuracy & Failure Detection F1** | `1,066` train / `356` test | **`100.0%` Accuracy / `100.0%` F1** |
+| ***SeeTraceAct* 2D Future Trajectory L1 Error** | `1,066` train / `356` test | **`0.0093`** (`0.93%` normalized image coordinates) |
+| ***SAGE* Sink-Aware Visual Grounding Ratio ($\alpha_{\text{ground}}$)** | `356` test windows | **`1.0000` (`100%` visual attention vs. `[SINK]`)** |
+| **Uncached 4-Camera Sliding-Window Latency** | CUDA GPU wall-clock | **`13.28 ms`** (`75.32 Hz`) |
+| **Perceiver Cached 1 Hz Delta Latency & Speedup** | CUDA GPU wall-clock | **`0.91 ms`** (`1,102.51 Hz`, **`14.64x` CUDA Speedup**) |
 
 ---
 

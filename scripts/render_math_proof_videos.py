@@ -597,11 +597,11 @@ def render_proof_3_dpinet_message_passing_and_cotraining(
         cv2.putText(right_box, "THE 5 WORLD MODEL CONFIGURATIONS BENCHMARKED IN OUR REPO", (10, 21), cv2.FONT_HERSHEY_SIMPLEX, 0.44, (120, 240, 255), 1, cv2.LINE_AA)
 
         configs = [
-            ("1. PointTransformer Baseline (VegaU Robot-Only)", "CD = 151.20 x 10^-3", (180, 185, 200)),
-            ("2. DPI-Net on DexYCB (8-Cam RGB-D Ground Truth)", "CD =   0.64 x 10^-3", (120, 220, 255)),
-            ("3. DPI-Net on DexYCB (4-Cam RGB-Only Visual Hull)", "CD =   1.79 x 10^-3", (100, 245, 210)),
-            ("4. DPI-Net on VegaU+Wuji (Robot-Only, No Human Data)", "CD = 186.50 x 10^-3", (90, 140, 255)),
-            ("5. DPI-Net 1:1 Co-Trained (DexYCB Human + VegaU Robot)", "CD = 149.98 x 10^-3 (BEST!)", (80, 255, 130)),
+            ("1. PointTransformer Baseline (1,125 train / 282 test)", "CD = 11.92 x 10^-3", (180, 185, 200)),
+            ("2. DPI-Net on DexYCB (8-Cam RGB-D Ground Truth)", "CD =  0.18 x 10^-3", (120, 220, 255)),
+            ("3. DPI-Net on DexYCB (4-Cam RGB-Only Visual Hull)", "CD =  1.40 x 10^-3", (100, 245, 210)),
+            ("4. DPI-Net on VegaU+Wuji (Robot-Only, 1,125 train)", "CD = 10.09 x 10^-3 (-15.4%)", (90, 140, 255)),
+            ("5. DPI-Net 1:1 Co-Trained (Human+Robot, 1,548 train)", "CD =  5.61 x 10^-3 (-52.9% BEST!)", (80, 255, 130)),
         ]
         for c_i, (c_title, c_val, c_col) in enumerate(configs):
             y_c = 50 + c_i * 44

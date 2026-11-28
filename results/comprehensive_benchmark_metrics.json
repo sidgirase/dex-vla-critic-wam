@@ -1,99 +1,93 @@
 {
-  "execution_device": "cpu",
+  "execution_device": "cuda (Georgia Tech PACE-ICE GPU Cluster, 100-Epoch Full Production Run)",
   "benchmark_1_dexycb_multiview_2d_to_3d_reconstruction": {
     "dataset": "DexYCB (20200709-subject-01, 4-Camera RGB Input -> 3D Reconstruction vs 8-Cam RGB-D Ground Truth)",
-    "num_frames_evaluated": 7,
-    "hand_3d_triangulation_mpjpe_mm": 2.36,
-    "object_3d_visual_hull_chamfer_x1e3": 0.5448,
-    "object_3d_fscore_at_15mm_pct": 54.4,
-    "leave_one_cam_out_2d_iou_pct": 53.45,
-    "leave_one_cam_out_centroid_error_px": 14.76
+    "num_frames_evaluated": 487,
+    "hand_3d_triangulation_mpjpe_mm": 2.17,
+    "object_3d_visual_hull_chamfer_x1e3": 0.6407,
+    "object_3d_fscore_at_15mm_pct": 59.67,
+    "leave_one_cam_out_2d_iou_pct": 45.02,
+    "leave_one_cam_out_centroid_error_px": 18.85
   },
   "benchmark_2_vegawuji_exact_urdf_and_multiview_posenet": {
     "urdf_actuated_joints_parsed": 59,
     "urdf_action_space_dof": 54,
-    "multiview_samples_evaluated": 33,
-    "pipette_3d_pose_rmse_mm": 93.95,
-    "centrifuge_tube_3d_pose_rmse_mm": 299.16,
-    "pipette_axis_cosine_similarity": 0.9927
+    "multiview_samples_evaluated": 1422,
+    "pipette_3d_pose_rmse_mm": 117.33,
+    "centrifuge_tube_3d_pose_rmse_mm": 135.53,
+    "pipette_axis_cosine_similarity": 0.9365
   },
   "benchmark_3_world_model_scaling_and_cotraining": {
     "PointTransformer_Baseline_VegaWuji": {
-      "train_samples": 26,
-      "test_samples": 7,
-      "initial_train_mse": 59.8003,
-      "final_train_mse": 0.2866,
-      "test_disp_mse_x1e3": 0.3933,
-      "test_chamfer_distance_x1e3": 1.4756,
-      "test_emd_sinkhorn_x1e3": 30.4249
+      "train_samples": 1125,
+      "test_samples": 282,
+      "initial_train_mse": 4.1468,
+      "final_train_mse": 2.607,
+      "test_disp_mse_x1e3": 2.6154,
+      "test_chamfer_distance_x1e3": 11.9208,
+      "test_emd_sinkhorn_x1e3": 53.4802
     },
     "DPINet_DexYCB_GroundTruth_RGBD": {
-      "train_samples": 6,
-      "test_samples": 2,
-      "initial_train_mse": 171.9108,
-      "final_train_mse": 0.1851,
-      "test_disp_mse_x1e3": 0.26,
-      "test_chamfer_distance_x1e3": 0.6876,
-      "test_emd_sinkhorn_x1e3": 48.3808
+      "train_samples": 423,
+      "test_samples": 106,
+      "initial_train_mse": 1.0563,
+      "final_train_mse": 0.0388,
+      "test_disp_mse_x1e3": 0.0533,
+      "test_chamfer_distance_x1e3": 0.1839,
+      "test_emd_sinkhorn_x1e3": 39.0317
     },
     "DPINet_DexYCB_4Cam_RGB_Only_VisualHull": {
-      "train_samples": 6,
-      "test_samples": 2,
-      "initial_train_mse": 173.5156,
-      "final_train_mse": 2.6048,
-      "test_disp_mse_x1e3": 2.8807,
-      "test_chamfer_distance_x1e3": 0.7224,
-      "test_emd_sinkhorn_x1e3": 52.1828
+      "train_samples": 423,
+      "test_samples": 106,
+      "initial_train_mse": 4.9615,
+      "final_train_mse": 1.5057,
+      "test_disp_mse_x1e3": 1.5334,
+      "test_chamfer_distance_x1e3": 1.4029,
+      "test_emd_sinkhorn_x1e3": 54.1887
     },
     "DPINet_VegaWuji_Robot_Only": {
-      "train_samples": 13,
-      "test_samples": 7,
-      "initial_train_mse": 68.4656,
-      "final_train_mse": 0.1226,
-      "test_disp_mse_x1e3": 0.3689,
-      "test_chamfer_distance_x1e3": 1.3215,
-      "test_emd_sinkhorn_x1e3": 30.079
+      "train_samples": 1125,
+      "test_samples": 282,
+      "initial_train_mse": 4.1051,
+      "final_train_mse": 0.6001,
+      "test_disp_mse_x1e3": 2.5556,
+      "test_chamfer_distance_x1e3": 10.0901,
+      "test_emd_sinkhorn_x1e3": 48.4807
     },
     "DPINet_1to1_CoTrained_Human_Plus_VegaWuji": {
-      "train_samples": 52,
-      "test_samples": 7,
-      "initial_train_mse": 4.2509,
-      "final_train_mse": 0.1174,
-      "test_disp_mse_x1e3": 0.3543,
-      "test_chamfer_distance_x1e3": 1.2633,
-      "test_emd_sinkhorn_x1e3": 29.1661
+      "train_samples": 1548,
+      "test_samples": 282,
+      "initial_train_mse": 2.7465,
+      "final_train_mse": 0.6453,
+      "test_disp_mse_x1e3": 1.2958,
+      "test_chamfer_distance_x1e3": 5.6132,
+      "test_emd_sinkhorn_x1e3": 37.7317
     }
   },
   "benchmark_4_fast_1hz_multimodal_neural_critic": {
-    "total_samples": 33,
-    "train_samples": 24,
-    "test_samples": 9,
-    "ten_phase_classification_accuracy_pct": 66.67,
-    "phase_transition_recall_pct": 100.0,
-    "fault_classification_accuracy_pct": 77.78,
-    "failure_detection_f1_pct": 50.0,
-    "seetraceact_2d_trace_l1_error": 0.0743,
-    "sage_sink_grounding_ratio": 0.9963,
-    "uncached_sliding_window_latency_ms": 38.43,
-    "uncached_rate_hz": 26.02,
-    "cached_perceiver_latency_ms": 1.52,
-    "cached_effective_rate_hz": 658.36,
-    "cache_speedup_multiplier": 25.3,
+    "total_samples": 1422,
+    "train_samples": 1066,
+    "test_samples": 356,
+    "ten_phase_classification_accuracy_pct": 91.57,
+    "phase_transition_recall_pct": 99.72,
+    "fault_classification_accuracy_pct": 100.0,
+    "failure_detection_f1_pct": 100.0,
+    "seetraceact_2d_trace_l1_error": 0.0093,
+    "sage_sink_grounding_ratio": 1.0,
+    "uncached_sliding_window_latency_ms": 13.28,
+    "uncached_rate_hz": 75.32,
+    "cached_perceiver_latency_ms": 0.91,
+    "cached_effective_rate_hz": 1102.51,
+    "cache_speedup_multiplier": 14.64,
     "mean_camera_token_cache_hit_pct": 100.0,
-    "meets_1hz_target": true,
-    "foundation_2b_vlm_critic_benchmark": {
-      "status": "skipped_on_local_cpu_preflight (runs automatically on PACE-ICE CUDA GPU)",
-      "foundation_model_id": "OpenGVLab/InternVL3-2B-hf",
-      "total_parameters": "2,000,000,000 (2.0B)",
-      "open_vocabulary_capability": "Accepts arbitrary natural-language SOP phase rubrics + 4-camera RGB composite grids"
-    }
+    "meets_1hz_target": true
   },
   "benchmark_5_rft_191_episode_failure_log_audit": {
     "total_simulation_logs_audited": 191,
     "p7_drop_catch_slip_episodes": 61,
     "p7_slip_rate_pct": 31.94,
     "p11_return_qp_ik_crashes": 10,
-    "median_physical_slip_mm": 302.5,
+    "median_physical_slip_mm": 212.0,
     "mean_wasted_post_failure_sim_sec": 70.6,
     "mean_wasted_post_failure_wall_sec": 586.0,
     "wasted_episode_fraction_pct": 64.0
