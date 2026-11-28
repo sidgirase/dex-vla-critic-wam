@@ -1,0 +1,40 @@
+{
+  "checkpoints_used": {
+    "multiview_pose_net_best.pt": {
+      "sha256_prefix": "5a8381a7b38f73dd",
+      "num_params": 23177,
+      "weight_l2_norm_sum": 41.166
+    },
+    "dpinet_cotrained_best.pt": {
+      "sha256_prefix": "591908b4e0cb2b1b",
+      "num_params": 317699,
+      "weight_l2_norm_sum": 548.728
+    },
+    "dpinet_vegawuji_only.pt": {
+      "sha256_prefix": "256b6ea8abb9ecd7",
+      "num_params": 317699,
+      "weight_l2_norm_sum": 540.396
+    },
+    "dpinet_dexycb_gt.pt": {
+      "sha256_prefix": "8dc6ced6729bdd6f",
+      "num_params": 317699,
+      "weight_l2_norm_sum": 253.452
+    },
+    "dpinet_dexycb_rgb_only_vh.pt": {
+      "sha256_prefix": "dbd3eaeab11fcadc",
+      "num_params": 317699,
+      "weight_l2_norm_sum": 374.34
+    },
+    "point_transformer_vega.pt": {
+      "sha256_prefix": "557f04ba21bf8c0c",
+      "num_params": 415619,
+      "weight_l2_norm_sum": 288.546
+    },
+    "fast_1hz_critic_best.pt": {
+      "sha256_prefix": "ccaf81954f624112",
+      "num_params": 397081,
+      "weight_l2_norm_sum": 272.781
+    }
+  },
+  "metrics_source": "c:\\Users\\sgirase3\\Documents\\Capstone\\dex-vla-critic-wam\\results\\run_1_pace_cuda_metrics.json"
+}
