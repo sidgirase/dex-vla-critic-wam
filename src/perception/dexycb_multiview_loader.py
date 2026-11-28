@@ -481,18 +481,15 @@ class DexYCBMultiViewReconstructor:
                 for s in serials[:4]
             }
 
-            seq_hand_p = []
-            seq_obj_p = []
-
-            for f_idx in range(5, meta["num_frames"] - 2, frame_stride):
-                lbl_path = os.path.join(seq_dir, master_cam, f"labels_{f_idx:06d}.npz")
+            def _extract_single_frame(f_i: int):
+                lbl_path = os.path.join(seq_dir, master_cam, f"labels_{f_i:06d}.npz")
                 if not os.path.exists(lbl_path):
-                    continue
+                    return None, None
                 lbl = np.load(lbl_path)
                 j3d_cam = lbl["joint_3d"][0]
                 pose_y = lbl["pose_y"][grasp_ind]
                 if np.any(j3d_cam < -0.9) or np.allclose(pose_y, 0.0):
-                    continue
+                    return None, None
 
                 if not use_visual_hull_rgb_only:
                     j_hom = np.hstack([j3d_cam, np.ones((21, 1), dtype=np.float32)])
@@ -506,7 +503,7 @@ class DexYCBMultiViewReconstructor:
                     kp2d_by_cam = {}
                     masks_by_cam = {}
                     for s in serials[:4]:
-                        lp = os.path.join(seq_dir, s, f"labels_{f_idx:06d}.npz")
+                        lp = os.path.join(seq_dir, s, f"labels_{f_i:06d}.npz")
                         if os.path.exists(lp):
                             l_s = np.load(lp)
                             kp2d_by_cam[s] = l_s["joint_2d"][0]
@@ -518,22 +515,24 @@ class DexYCBMultiViewReconstructor:
                     obj_hom = np.hstack([obj_cam, np.ones((len(obj_cam), 1), dtype=np.float32)])
                     gt_center = np.mean((T_c2w @ obj_hom.T).T[:, :3], axis=0)
                     obj_p = self.visual_hull_space_carving(masks_by_cam, proj_matrices, gt_center, grid_res=18)
+                return hand_p, obj_p
 
-                seq_hand_p.append(hand_p)
-                seq_obj_p.append(obj_p)
-
-            for t in range(len(seq_hand_p) - 1):
-                hand_disp = seq_hand_p[t + 1] - seq_hand_p[t]
-                obj_disp = seq_obj_p[t + 1] - seq_obj_p[t]
-                # Filter static no-op frames so world model trains on active interaction dynamics
+            # Always pair physical step (f_idx, f_idx + 3) so dt is invariant to sampling stride
+            for f_idx in range(5, meta["num_frames"] - 5, frame_stride):
+                hp_t, op_t = _extract_single_frame(f_idx)
+                hp_n, op_n = _extract_single_frame(f_idx + 3)
+                if hp_t is None or hp_n is None:
+                    continue
+                hand_disp = hp_n - hp_t
+                obj_disp = op_n - op_t
                 if float(np.linalg.norm(hand_disp)) > 1e-4:
                     transitions.append({
                         "domain": "dexycb_human",
-                        "hand_p": seq_hand_p[t],
-                        "obj_p": seq_obj_p[t],
+                        "hand_p": hp_t,
+                        "obj_p": op_t,
                         "hand_disp": hand_disp,
                         "target_obj_disp": obj_disp,
-                        "next_obj_p": seq_obj_p[t + 1],
+                        "next_obj_p": op_n,
                     })
 
         return transitions

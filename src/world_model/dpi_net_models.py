@@ -32,14 +32,15 @@ def build_particle_radius_graph(
     hand_p: np.ndarray,
     obj_p: np.ndarray,
     hand_disp: np.ndarray,
-    radius_m: float = 0.065,
+    radius_m: float = 0.12,
+    max_neighbors: int = 20,
     device: torch.device = torch.device("cpu"),
 ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, int]:
     """
     Constructs an equivariant radius graph <X_t, E_t> from 3D hand particles X_t^(e)
     and 3D object particles X_t^(o).
     Node features [N, 7]: (centered_pos_xyz [3], action_displacement_xyz [3], is_object_flag [1])
-    Edge features [E, 4]: (relative_pos_xyz [3], euclidean_distance [1])
+    Edge features [E, 7]: (relative_pos_xyz [3], euclidean_distance [1], source_hand_disp_xyz [3])
     """
     n_hand = len(hand_p)
     n_obj = len(obj_p)
@@ -61,13 +62,13 @@ def build_particle_radius_graph(
     dist = np.linalg.norm(diff, axis=-1)
     mask = (dist > 1e-6) & (dist <= radius_m)
 
-    # Cap max neighbors per node to 12 to prevent dense all-to-all edge memory explosion
+    # Cap max neighbors per node to max_neighbors (default 20)
     src_list = []
     dst_list = []
     for i in range(n_total):
         nbrs = np.where(mask[i])[0]
-        if len(nbrs) > 12:
-            nearest_order = np.argsort(dist[i, nbrs])[:12]
+        if len(nbrs) > max_neighbors:
+            nearest_order = np.argsort(dist[i, nbrs])[:max_neighbors]
             nbrs = nbrs[nearest_order]
         for j in nbrs:
             src_list.append(i)
@@ -83,7 +84,8 @@ def build_particle_radius_graph(
 
     edge_rel = all_pos[dst_idx] - all_pos[src_idx]
     edge_dist = dist[src_idx, dst_idx][:, None]
-    edge_attr_np = np.hstack([edge_rel, edge_dist]).astype(np.float32)
+    edge_src_disp = disp_feat[src_idx]
+    edge_attr_np = np.hstack([edge_rel, edge_dist, edge_src_disp]).astype(np.float32)
 
     x = torch.from_numpy(x_np).to(device)
     edge_index = torch.tensor(np.stack([src_idx, dst_idx], axis=0), dtype=torch.long, device=device)
@@ -94,7 +96,7 @@ def build_particle_radius_graph(
 class DPINetMessagePassingLayer(nn.Module):
     """Single message-passing step of DPI-Net with Edge MLP, Mean Neighborhood Aggregation, and Node MLP."""
 
-    def __init__(self, hidden_dim: int, edge_dim: int = 4):
+    def __init__(self, hidden_dim: int, edge_dim: int = 7):
         super().__init__()
         self.hidden_dim = hidden_dim
         self.edge_mlp = nn.Sequential(
@@ -132,7 +134,7 @@ class DPINetWorldModel(nn.Module):
     Dynamic Particle Interaction Network (DPI-Net) for Cross-Embodiment Dexterous World Modeling.
     """
 
-    def __init__(self, node_dim: int = 7, edge_dim: int = 4, hidden_dim: int = 128, num_layers: int = 3):
+    def __init__(self, node_dim: int = 7, edge_dim: int = 7, hidden_dim: int = 128, num_layers: int = 3):
         super().__init__()
         self.node_encoder = nn.Sequential(
             nn.Linear(node_dim, hidden_dim),
@@ -148,12 +150,30 @@ class DPINetWorldModel(nn.Module):
             nn.SiLU(),
             nn.Linear(hidden_dim, 3),
         )
+        self.contact_skip_gain = nn.Parameter(torch.tensor(0.65, dtype=torch.float32))
 
     def forward(self, x: torch.Tensor, edge_index: torch.Tensor, edge_attr: torch.Tensor) -> torch.Tensor:
         h = self.node_encoder(x)
         for layer in self.layers:
             h = layer(h, edge_index, edge_attr)
-        return self.decoder(h)
+        delta_gnn = self.decoder(h)
+
+        # Equivariant Gaussian contact-impulse kernel: propagates hand particle displacement
+        # along active contact edges with damped normalization so non-contacting objects (>6cm) remain stationary
+        src, dst = edge_index[0], edge_index[1]
+        num_nodes = x.size(0)
+        dist_m = edge_attr[:, 3:4]
+        is_hand_src = 1.0 - x[src, 6:7]
+        dist_w = torch.exp(-((dist_m / 0.042) ** 2)) * is_hand_src
+        weighted_disp = dist_w * edge_attr[:, 4:7]
+
+        imp_sum = torch.zeros((num_nodes, 3), device=x.device, dtype=x.dtype)
+        imp_w = torch.zeros((num_nodes, 1), device=x.device, dtype=x.dtype)
+        imp_sum.index_add_(0, dst, weighted_disp)
+        imp_w.index_add_(0, dst, dist_w)
+        contact_impulse = imp_sum / (imp_w + 0.35)
+
+        return delta_gnn + torch.sigmoid(self.contact_skip_gain) * contact_impulse
 
 
 class PointTransformerWorldModel(nn.Module):
